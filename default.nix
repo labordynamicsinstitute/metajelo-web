@@ -1,8 +1,8 @@
 {
   nodejsVersion ? "10.14.1",
   yarnVersion ? "1.12.3",
-  purescriptVersion ? "0.12.1",
-  nixjs ? fetchTarball "https://github.com/cprussin/nixjs/archive/0.0.2.tar.gz",
+  purescriptVersion ? "0.12.2",
+  nixjs ? fetchTarball "https://github.com/cprussin/nixjs/archive/0.0.7.tar.gz",
   # nixpkgs ? (import ./pkgs.nix) # or change to: ? <nixpkgs>
   # how to get this to work?
   nixpkgs ? <nixpkgs>
