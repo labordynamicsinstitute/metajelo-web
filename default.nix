@@ -1,23 +1,29 @@
-{ pkgs ? import ./pkgs.nix }:
+{
+  nodejsVersion ? "10.14.1",
+  yarnVersion ? "1.12.3",
+  purescriptVersion ? "0.12.1",
+  nixjs ? fetchTarball "https://github.com/cprussin/nixjs/archive/0.0.2.tar.gz",
+  # nixpkgs ? (import ./pkgs.nix) # or change to: ? <nixpkgs>
+  # how to get this to work?
+  nixpkgs ? <nixpkgs>
+}:
 
-let nodejs = pkgs.nodejs-10_x;
-    nodePackages = pkgs.nodePackages.override { inherit nodejs; };
-    yarn = pkgs.yarn.override { inherit nodejs; };
-in pkgs.stdenv.mkDerivation {
-  name = "hello-purescript";
-  src = ./.;
-  buildInputs = [
-    pkgs.purescript
-    pkgs.psc-package
-    nodePackages.bower
-#    pkgs.nodePackages.pulp
-    yarn
-    nodejs
+
+with import nixpkgs {
+  overlays = [
+    (import nixjs {
+      nodejs = nodejsVersion;
+      yarn = yarnVersion;
+      purescript = purescriptVersion;
+    })
   ];
-  buildPhase = ''
-  '';
-  checkPhase = ''
-  '';
-  installPhase = ''
-  '';
+};
+
+mkShell {
+  buildInputs = [
+    nodejs yarn purescript
+    nodePackages.bower
+    nodePackages.pulp
+    psc-package
+  ];
 }
