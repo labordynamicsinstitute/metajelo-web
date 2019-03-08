@@ -11,9 +11,18 @@ otherwise sticking with stable NixOS release.
 In this example, the Purescript libraries are installed using psc-package and
 Nix is only used to install the basic tooling.
 
-* Usage
+# Usage
 
-** Shell environment
+## Docker
+
+* First build the image: `./build-docker.sh`
+
+* Run `./psc.sh <command>`, e.g. `./psc.sh pulp --psc-package build`. This will run
+the command in the container with the CWD mounted and then exit. Alternatively
+if you want to issue multiple commands in the container quickly, you can
+run `./psc.sh bash`.
+
+## Shell environment
 
    1. git clone git://github.com/kaitanie/nix-purescript-example-project
    2. cd nix-purescript-example-project
