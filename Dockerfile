@@ -17,12 +17,5 @@ RUN cd /opt \
 ENV PATH /opt/purescript:$PATH
 
 RUN userdel node
-RUN useradd -m -s /bin/bash pureuser
 
-WORKDIR /home/pureuser
-
-USER pureuser
-
-RUN mkdir tmp && cd tmp && pulp init
-
-CMD cd tmp && pulp psci
+ENTRYPOINT ["pulp"]
