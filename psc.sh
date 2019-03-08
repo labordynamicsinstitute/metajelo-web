@@ -7,3 +7,5 @@ docker run --rm -ti \
        --workdir /wd \
        purescript:0.12.3 "$@"
 
+# Add this before the last line (image name) for debugging:
+#        --entrypoint "/bin/bash" \
