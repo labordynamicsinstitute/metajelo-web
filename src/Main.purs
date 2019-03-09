@@ -1,10 +1,15 @@
 module Main where
 
 import Prelude
+
+import Concur.Core (Widget)
+import Concur.React (HTML)
+import Concur.React.DOM as D
+import Concur.React.Run (runWidgetInDom)
 import Effect (Effect)
-import Effect.Console (log)
+
+rootWidget :: forall a. Widget HTML a
+rootWidget = D.text "Hello World"
 
 main :: Effect Unit
-main = do
-  let x = 1 + 1
-  log "Hello sailor!"
+main = runWidgetInDom "root" rootWidget
