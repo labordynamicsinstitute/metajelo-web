@@ -1,16 +1,16 @@
 {
-  "name": "purescript-concur-starter",
-  "version": "0.1.0",
+  "name": "metajelo-web",
+  "version": "0.0.1",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "output"
   ],
-  "license": "MIT",
+  "license": "MPL2",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ajnsit/purescript-concur-starter.git"
+    "url": "git://github.com/labordynamicsinstitute/metajelo-web.git"
   },
   "dependencies": {
     "purescript-concur-react": "^0.3.3"
