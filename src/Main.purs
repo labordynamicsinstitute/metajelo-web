@@ -11,9 +11,11 @@ import Effect                               (Effect)
 
 hello :: forall a. Widget HTML a
 hello = do
-  -- void to discard the button click
-  void $ button [onClick] [text "Say Hello"]
+  buttonHello
   text "Hello Sailor!"
+
+buttonHello :: Widget HTML Unit
+buttonHello = void $ button [onClick] [text "Say Hello"]
 
 main :: Effect Unit
 main = runWidgetInDom "root" hello
