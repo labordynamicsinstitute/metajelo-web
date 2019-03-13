@@ -17,8 +17,10 @@ hello = do
     [ "Hello" <$ button [onClick] [text "Say Hello"]
     , "Namaste" <$ button [onClick] [text "Say Namaste"]
     ]
-
   text (greeting <> " Sailor!")
+
+buttonHello :: Widget HTML Unit
+buttonHello = void $ button [onClick] [text "Say Hello"]
 
 main :: Effect Unit
 main = runWidgetInDom "root" hello
