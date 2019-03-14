@@ -2,7 +2,7 @@ module Main where
 
 import Prelude
 
-import Concur.Core                          (Widget)
+import Concur.Core                          (Widget, andd)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     (button, button', div', input, p', text)
 import Concur.React.Props                   (onChange, onClick, onFocus, unsafeTargetValue)
@@ -66,8 +66,8 @@ listCounters = orr <<< map counter
 -- listCounters2 initialCounts = orr (mapWithIndex (mkCount initialCounts) initialCounts)
 --   where mkCount initialCountArray index initCount = map (\count -> fromMaybe initialCountArray (updateAt index count initialCountArray)) (counter initCount)
 
--- listCounters3 :: Array Int -> Widget HTML (Array Int)
--- listCounters3 initialCounts = andd (map counter initialCounts)
+listCounters3 :: Array Int -> Widget HTML (Array Int)
+listCounters3 initialCounts = andd (map counter initialCounts)
 
 
 main :: Effect Unit

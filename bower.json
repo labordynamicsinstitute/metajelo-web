@@ -13,7 +13,7 @@
     "url": "git://github.com/labordynamicsinstitute/metajelo-web.git"
   },
   "dependencies": {
-    "purescript-concur-react": "^0.3.3"
+    "purescript-concur-react": "git@github.com:ajnsit/purescript-concur.git#05b61ee99b6c3128ce565208117387a9f4cae259"
   },
   "resolutions": {
     "purescript-web-dom": "^2.0.0",
