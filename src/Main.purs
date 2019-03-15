@@ -138,7 +138,45 @@ helloGreets = do
   showGreeting greeting
   helloGreets
 
-helloComp :: String -> forall a. Widget HTML a
+type Tab = Widget HTML Unit
+type Page = Widget HTML Unit
+type TabPage = {
+    tab:: Tab
+  , page :: Page
+  }
+
+createTabWidget :: Array TabPage -> Widget HTML Unit
+createTabWidget tabPages = do
+  (idx, tab) <- orr <<< map tabPages
+  where
+    tabIndexer :: Array Tab -> Array (Widget HTML Int)
+    tabIndexer ts = ixedWidgs
+      where
+        ixedTabs = zip [0..] ts
+        ixedWidgs = map $ button [onClick] $ ixedTabs
+    tabs = map (\tp -> tp.tab) tabPages
+    pages = map (\tp -> tp.page) tabPages
+
+abstractPage :: TabPage
+abstractPage = {
+  tab = div_ $ text "Abstract"
+, page = div_ $ p' [text "Nothing much yet."]
+}
+
+refsPage :: TabPage
+refsPage = {
+  tab = div_ $ text "References"
+, page = div_ $ p' [text "References: Nothing much yet."]
+}
+
+tabPages :: Array TabPage
+tabPages = [abstractPage, refsPage]
+
+showTabPages :: forall a. Widget HTML a
+showTabPages = do
+  createTabWidget tabPages
+  showTabPages
+
 helloComp prev = helloComp =<< div'
   [ text ("Previous greeting - " <> prev)
   , do
@@ -147,18 +185,8 @@ helloComp prev = helloComp =<< div'
       pure greeting
   ]
 
-{- FIXME: not working. understand type of display
-helloSig :: String -> Signal HTML String
-helloSig s = display $ helloComp s
 
-
-helloListWithDisplay :: Array String -> Signal HTML (Array String)
-helloListWithDisplay prev = div_ [] do
-  traverse helloComp prev
-  display (text ("Previously selected greetings - " <> show prev))
--}
 
 main :: Effect Unit
-main = runWidgetInDom "root" $ focusCountWidget
--- main = runWidgetInDom "root" $ listCounters3 [1, 1, 2, 3, 5]
--- main = runWidgetInDom "root" helloListWithDisplay
+main = runWidgetInDom "root" $ showTabPages
+
