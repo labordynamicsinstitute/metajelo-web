@@ -154,7 +154,7 @@ createTabWidget tabPages = orr <<< map tabPages
         mkIxedTw ixtb = do
           button [onClick] (snd ixtb)
           pure (fst ixtb)
-        ixedWidgs = map mkIxedTw $ zip [0..] ts
+        ixedWidgs = map mkIxedTw $ zip (0 .. length ts) ts
     tabs = map (\tp -> tp.tab) tabPages
     pages = map (\tp -> tp.page) tabPages
 
