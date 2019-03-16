@@ -146,16 +146,15 @@ type TabPage = {
   }
 
 createTabWidget :: Array TabPage -> Widget HTML Unit
-createTabWidget tabPages = do
-  (idx, tab) <- orr <<< map tabPages
+createTabWidget tabPages = orr <<< map tabPages
   where
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
     tabIndexer ts = ixedWidgs
       where
-        mkIxedTw (ix, tb) = do
-          button [onClick] tb
-          pure ix
-        ixedWidgs = map mkIxedTw (zip [0..] ts)
+        mkIxedTw ixtb = do
+          button [onClick] (snd ixtb)
+          pure (fst ixtb)
+        ixedWidgs = map mkIxedTw $ zip [0..] ts
     tabs = map (\tp -> tp.tab) tabPages
     pages = map (\tp -> tp.page) tabPages
 
