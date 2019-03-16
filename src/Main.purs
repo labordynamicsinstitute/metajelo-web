@@ -15,6 +15,8 @@ import Control.Alt                          ((<|>))
 import Control.MultiAlternative             (orr)
 import Data.Maybe                           (fromMaybe)
 import Data.Traversable                     (traverse)
+import Data.Array                           ((..), length, zip)
+import Data.Tuple                           (fst, snd)
 import Effect                               (Effect)
 import Effect.Class                         (liftEffect)
 import Effect.Class.Console                 (log)
@@ -118,8 +120,6 @@ formWidget form = do
     Submit -> pure form
 -}
 
-
-
 getGreeting :: Widget HTML String
 getGreeting = div'
     [ "Hello" <$ button [onClick] [text "Say Hello"]
@@ -141,7 +141,7 @@ helloGreets = do
 type Tab = Widget HTML Unit
 type Page = Widget HTML Unit
 type TabPage = {
-    tab:: Tab
+    tab :: Tab
   , page :: Page
   }
 
@@ -160,14 +160,14 @@ createTabWidget tabPages = orr <<< map tabPages
 
 abstractPage :: TabPage
 abstractPage = {
-  tab = div_ $ text "Abstract"
-, page = div_ $ p' [text "Nothing much yet."]
+  tab : div' [text "Abstract"]
+, page : div' [p' [text "Nothing much yet."]]
 }
 
 refsPage :: TabPage
 refsPage = {
-  tab = div_ $ text "References"
-, page = div_ $ p' [text "References: Nothing much yet."]
+  tab : div' [text "References"]
+, page : div' [p' [text "References: Nothing much yet."]]
 }
 
 tabPages :: Array TabPage
@@ -177,16 +177,6 @@ showTabPages :: forall a. Widget HTML a
 showTabPages = do
   createTabWidget tabPages
   showTabPages
-
-helloComp prev = helloComp =<< div'
-  [ text ("Previous greeting - " <> prev)
-  , do
-      greeting <- getGreeting
-      showGreeting greeting
-      pure greeting
-  ]
-
-
 
 main :: Effect Unit
 main = runWidgetInDom "root" $ showTabPages
