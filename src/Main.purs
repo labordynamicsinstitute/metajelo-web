@@ -15,8 +15,8 @@ import Control.Alt                          ((<|>))
 import Control.MultiAlternative             (orr)
 import Data.Maybe                           (fromMaybe)
 import Data.Traversable                     (traverse)
-import Data.Array                           ((..), length, zip)
-import Data.Tuple                           (fst, snd)
+import Data.Array                           ((..), (!!), length, zip)
+import Data.Tuple                           (Tuple, fst, snd)
 import Effect                               (Effect)
 import Effect.Class                         (liftEffect)
 import Effect.Class.Console                 (log)
@@ -138,25 +138,32 @@ helloGreets = do
   showGreeting greeting
   helloGreets
 
-type Tab = Widget HTML Unit
-type Page = Widget HTML Unit
+type Tab = forall a. Widget HTML a
+type Page = forall a. Widget HTML a
 type TabPage = {
-    tab :: Tab
-  , page :: Page
-  }
+  tab :: Tab
+, page :: Page
+}
 
-createTabWidget :: Array TabPage -> Widget HTML Unit
-createTabWidget tabPages = orr <<< map tabPages
+createTabWidget :: forall a. Array TabPage -> Int -> Widget HTML a
+createTabWidget tPages ixInit = do
+  tabSel <- div' [div' $ tabIndexer tabs, pageAt ixInit]
+  createTabWidget tPages tabSel
   where
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
-    tabIndexer ts = ixedWidgs
+    tabIndexer ts = map mkIxedTw $ zip (0 .. length ts) ts
       where
+        mkIxedTw :: Tuple Int Tab -> Widget HTML Int
         mkIxedTw ixtb = do
-          button [onClick] (snd ixtb)
+          button [onClick] [text "foo"] -- [snd ixtb] --FIXME
           pure (fst ixtb)
-        ixedWidgs = map mkIxedTw $ zip (0 .. length ts) ts
-    tabs = map (\tp -> tp.tab) tabPages
-    pages = map (\tp -> tp.page) tabPages
+    tabs = map (\tp -> tp.tab) tPages
+    pages :: Array Page
+    pages = map (\tp -> tp.page) tPages
+    emptyPage :: Page
+    emptyPage = div' [text "No pages to show!"]
+    pageAt :: Int -> Page
+    pageAt ix = fromMaybe emptyPage (pages !! ix)
 
 abstractPage :: TabPage
 abstractPage = {
@@ -174,9 +181,8 @@ tabPages :: Array TabPage
 tabPages = [abstractPage, refsPage]
 
 showTabPages :: forall a. Widget HTML a
-showTabPages = do
-  createTabWidget tabPages
-  showTabPages
+showTabPages = createTabWidget tabPages 0
+
 
 main :: Effect Unit
 main = runWidgetInDom "root" $ showTabPages
