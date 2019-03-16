@@ -152,8 +152,10 @@ createTabWidget tabPages = do
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
     tabIndexer ts = ixedWidgs
       where
-        ixedTabs = zip [0..] ts
-        ixedWidgs = map $ button [onClick] $ ixedTabs
+        mkIxedTw (ix, tb) = do
+          button [onClick] tb
+          pure ix
+        ixedWidgs = map mkIxedTw (zip [0..] ts)
     tabs = map (\tp -> tp.tab) tabPages
     pages = map (\tp -> tp.page) tabPages
 
