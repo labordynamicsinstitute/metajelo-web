@@ -138,8 +138,8 @@ helloGreets = do
   showGreeting greeting
   helloGreets
 
-type Tab = forall a. Widget HTML a
-type Page = forall a. Widget HTML a
+type Tab = Widget HTML Unit
+type Page = Widget HTML Unit
 type TabPage = {
   tab :: Tab
 , page :: Page
@@ -147,7 +147,10 @@ type TabPage = {
 
 createTabWidget :: forall a. Array TabPage -> Int -> Widget HTML a
 createTabWidget tPages ixInit = do
-  tabSel <- div' [div' $ tabIndexer tabs, pageAt ixInit]
+  tabSel <- div' [
+    div' $ tabIndexer tabs
+  , 0 <$ pageAt ixInit
+  ]
   createTabWidget tPages tabSel
   where
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
@@ -155,7 +158,7 @@ createTabWidget tPages ixInit = do
       where
         mkIxedTw :: Tuple Int Tab -> Widget HTML Int
         mkIxedTw ixtb = do
-          button [onClick] [text "foo"] -- [snd ixtb] --FIXME
+          void $ button [onClick] [tabForever $ snd ixtb]
           pure (fst ixtb)
     tabs = map (\tp -> tp.tab) tPages
     pages :: Array Page
@@ -164,6 +167,10 @@ createTabWidget tPages ixInit = do
     emptyPage = div' [text "No pages to show!"]
     pageAt :: Int -> Page
     pageAt ix = fromMaybe emptyPage (pages !! ix)
+    tabForever :: Tab -> forall a. Widget HTML a
+    tabForever tb = do
+      tb
+      tabForever tb
 
 abstractPage :: TabPage
 abstractPage = {
