@@ -5,7 +5,8 @@ import Prelude
 import Concur.Core                          (Widget, andd)
 import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
-import Concur.React.DOM                     (button, button', div, div_, div',
+import Concur.React.DOM                     (El', button, button', div,
+                                             div_, div',
                                              input, nav, p', text)
 import Concur.React.Props                   (_type, checked, classList,
                                              className, onChange, onChecked,
@@ -147,12 +148,25 @@ type TabPage = {
 , page :: Page
 }
 
+tabPageDiv' :: El'
+tabPageDiv' els =
+  div [className "pure-g"] [
+    div [menuTypeClasses] [
+      div [tabColClasses] els
+    ]
+  ]
+  where
+    menuTypeClasses = classList $
+      map Just ["pure-menu", "pure-menu-horizontal"]
+    tabColClasses = classList $
+      map Just ["pure-u-1", "pure-u-md-1-3"]
+
 createTabWidget :: forall a. Array TabPage -> Int -> Widget HTML a
-createTabWidget tPages ix = do
-  tabSel <- div [className "pure-g"] [div [tabColClasses] [
+createTabWidget tPages ix0 = do
+  tabSel <- tabPageDiv' [
     nav [className "pure-menu-list"] $ tabIndexer tabs
-  , ix <$ pageAt ix
-  ]]
+  , ix0 <$ pageAt ix0
+  ]
   createTabWidget tPages tabSel
   where
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
@@ -170,7 +184,7 @@ createTabWidget tPages ix = do
     emptyPage = div' [text "No pages to show!"]
     pageAt :: Int -> Page
     pageAt ix = fromMaybe emptyPage (pages !! ix)
-    tabColClasses = classList $ map Just ["pure-u-1", "pure-u-md-1-3"]
+
 
 abstractPage :: TabPage
 abstractPage = {
