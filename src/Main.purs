@@ -5,13 +5,14 @@ import Prelude
 import Concur.Core                          (Widget, andd)
 import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
-import Concur.React.DOM                     (button, button', div_, div',
+import Concur.React.DOM                     (button, button', div, div_, div',
                                              input, p', text)
-import Concur.React.Props                   (_type, checked, onChange,
-                                             onChecked, onClick, onFocus,
-                                             unsafeTargetValue, value)
+import Concur.React.Props                   (_type, checked, className,
+                                             onChange, onChecked, onClick,
+                                             onFocus, unsafeTargetValue, value)
 import Concur.React.Run                     (runWidgetInDom)
 import Control.Alt                          ((<|>))
+import Control.Monad.Rec.Class              (forever)
 import Control.MultiAlternative             (orr)
 import Data.Maybe                           (fromMaybe)
 import Data.Traversable                     (traverse)
@@ -138,8 +139,8 @@ helloGreets = do
   showGreeting greeting
   helloGreets
 
-type Tab = Widget HTML Unit
-type Page = Widget HTML Unit
+type Tab = Widget HTML Void
+type Page = Widget HTML Void
 type TabPage = {
   tab :: Tab
 , page :: Page
@@ -158,8 +159,9 @@ createTabWidget tPages ixInit = do
       where
         mkIxedTw :: Tuple Int Tab -> Widget HTML Int
         mkIxedTw ixtb = do
-          void $ button [onClick] [tabForever $ snd ixtb]
+          void $ div [onClick, tabClass] [snd ixtb]
           pure (fst ixtb)
+        tabClass = className "c-tabs-nav__link"
     tabs = map (\tp -> tp.tab) tPages
     pages :: Array Page
     pages = map (\tp -> tp.page) tPages
@@ -167,10 +169,6 @@ createTabWidget tPages ixInit = do
     emptyPage = div' [text "No pages to show!"]
     pageAt :: Int -> Page
     pageAt ix = fromMaybe emptyPage (pages !! ix)
-    tabForever :: Tab -> forall a. Widget HTML a
-    tabForever tb = do
-      tb
-      tabForever tb
 
 abstractPage :: TabPage
 abstractPage = {
