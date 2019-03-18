@@ -6,15 +6,16 @@ import Concur.Core                          (Widget, andd)
 import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     (button, button', div, div_, div',
-                                             input, p', text)
-import Concur.React.Props                   (_type, checked, className,
-                                             onChange, onChecked, onClick,
-                                             onFocus, unsafeTargetValue, value)
+                                             input, nav, p', text)
+import Concur.React.Props                   (_type, checked, classList,
+                                             className, onChange, onChecked,
+                                             onClick, onFocus,
+                                             unsafeTargetValue, value)
 import Concur.React.Run                     (runWidgetInDom)
 import Control.Alt                          ((<|>))
 import Control.Monad.Rec.Class              (forever)
 import Control.MultiAlternative             (orr)
-import Data.Maybe                           (fromMaybe)
+import Data.Maybe                           (Maybe(..), fromMaybe)
 import Data.Traversable                     (traverse)
 import Data.Array                           ((..), (!!), length, zip)
 import Data.Tuple                           (Tuple, fst, snd)
@@ -147,11 +148,11 @@ type TabPage = {
 }
 
 createTabWidget :: forall a. Array TabPage -> Int -> Widget HTML a
-createTabWidget tPages ixInit = do
-  tabSel <- div' [
-    div' $ tabIndexer tabs
-  , 0 <$ pageAt ixInit
-  ]
+createTabWidget tPages ix = do
+  tabSel <- div [className "pure-g"] [div [tabColClasses] [
+    nav [className "pure-menu-list"] $ tabIndexer tabs
+  , ix <$ pageAt ix
+  ]]
   createTabWidget tPages tabSel
   where
     tabIndexer :: Array Tab -> Array (Widget HTML Int)
@@ -159,16 +160,17 @@ createTabWidget tPages ixInit = do
       where
         mkIxedTw :: Tuple Int Tab -> Widget HTML Int
         mkIxedTw ixtb = do
-          void $ div [onClick, tabClass] [snd ixtb]
+          void $ div [onClick, tabClass] [absurd <$> snd ixtb]
           pure (fst ixtb)
-        tabClass = className "c-tabs-nav__link"
-    tabs = map (\tp -> tp.tab) tPages
+        tabClass = className "pure-menu-item"
+    tabs = (\tp -> tp.tab) <$> tPages
     pages :: Array Page
-    pages = map (\tp -> tp.page) tPages
+    pages = (\tp -> tp.page) <$> tPages
     emptyPage :: Page
     emptyPage = div' [text "No pages to show!"]
     pageAt :: Int -> Page
     pageAt ix = fromMaybe emptyPage (pages !! ix)
+    tabColClasses = classList $ map Just ["pure-u-1", "pure-u-md-1-3"]
 
 abstractPage :: TabPage
 abstractPage = {
