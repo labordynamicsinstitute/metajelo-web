@@ -148,19 +148,6 @@ type TabPage = {
 , page :: Page
 }
 
-tabPageDiv' :: El'
-tabPageDiv' els =
-  div [className "pure-g"] [
-    div [menuTypeClasses] [
-      div [tabColClasses] els
-    ]
-  ]
-  where
-    menuTypeClasses = classList $
-      map Just ["pure-menu", "pure-menu-horizontal"]
-    tabColClasses = classList $
-      map Just ["pure-u-1", "pure-u-md-1-3"]
-
 createTabWidget :: forall a. Array TabPage -> Int -> Widget HTML a
 createTabWidget tPages ix0 = do
   tabSel <- tabPageDiv' [
@@ -184,6 +171,18 @@ createTabWidget tPages ix0 = do
     emptyPage = div' [text "No pages to show!"]
     pageAt :: Int -> Page
     pageAt ix = fromMaybe emptyPage (pages !! ix)
+    tabPageDiv' :: El'
+    tabPageDiv' els =
+      div [className "pure-g"] [
+        div [menuTypeClasses] [
+          div [tabColClasses] els
+        ]
+      ]
+      where
+        menuTypeClasses = classList $
+          map Just ["pure-menu", "pure-menu-horizontal"]
+        tabColClasses = classList $
+          map Just ["pure-u-1", "pure-u-md-1-3"]
 
 
 abstractPage :: TabPage
