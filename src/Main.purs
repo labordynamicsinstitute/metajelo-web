@@ -24,23 +24,21 @@ import Data.Tuple                           (Tuple, fst, snd)
 import Effect                               (Effect)
 import Effect.Class                         (liftEffect)
 import Effect.Class.Console                 (log)
+import Metajelo.Types                       as MJ
 import React.SyntheticEvent                 (SyntheticMouseEvent)
 
 
--- | This is currently a mockup
-data Record = Record String
-
-mkRecordWidget :: Record -> forall a. Widget HTML a
-mkRecordWidget (Record recStr) =
+mkRecordWidget :: MJ.Record -> forall a. Widget HTML a
+mkRecordWidget (MJ.Record recStr) =
   div' [ text (recStr <> " Sailor!") ]
 
-rec1 = Record "foo"
-rec2 = Record "bar"
+rec1 = MJ.Record "foo"
+rec2 = MJ.Record "bar"
 
-recArray :: Array Record
+recArray :: Array MJ.Record
 recArray = [rec1, rec2]
 
-mkRecArrayWidg :: Array Record ->  forall a. Widget HTML a
+mkRecArrayWidg :: Array MJ.Record ->  forall a. Widget HTML a
 mkRecArrayWidg ra = div' $ map mkRecordWidget ra
 
 main :: Effect Unit
