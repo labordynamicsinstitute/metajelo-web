@@ -3,6 +3,7 @@
 docker run --rm -ti \
        --volume /etc/passwd:/etc/passwd:ro \
        --volume "$PWD":/wd \
+       --volume "$HOME/.gitconfig:$HOME/.gitconfig" \
        --volume "$HOME/.cache:$HOME/.cache" \
        --volume "$HOME/.npmrc:$HOME/.npmrc" \
        --volume "$HOME/.npm:$HOME/.npm" \
