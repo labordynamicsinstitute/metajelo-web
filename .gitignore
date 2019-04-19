@@ -1,6 +1,7 @@
 /bower_components/
 /.cache
 /dist/
+/testdist/
 /node_modules/
 /.pulp-cache/
 /output/

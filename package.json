@@ -5,10 +5,11 @@
   "main": "static/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "testbrowser": "./scripts/testbrowser",
     "clean": "rimraf output && rimraf .pulp-cache",
-    "build": "pulp build -- --censor-lib --strict",
+    "build": "bower install && pulp build -- --censor-lib --strict",
     "ps": "bower install && pulp build",
-    "prod": "parcel --public-url ./ build static/index.html",
+    "prod": "npm run ps && parcel --public-url ./ build static/index.html",
     "start": "parcel static/index.html",
     "watch": "parcel watch static/index.html"
   },
@@ -16,7 +17,7 @@
   "license": "MPL2",
   "devDependencies": {
     "bower": "^1.8.6",
-    "parcel-bundler": "^1.9.7",
+    "parcel-bundler": "^1.12.3",
     "pulp": "^12.3.1",
     "purescript": "^0.12.3",
     "purescript-psa": "^0.7.3",

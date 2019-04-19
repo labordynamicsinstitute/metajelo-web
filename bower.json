@@ -13,13 +13,18 @@
     "url": "git://github.com/labordynamicsinstitute/metajelo-web.git"
   },
   "dependencies": {
-    "purescript-concur-react": "^0.3.5"
-  },
-  "resolutions": {
+    "purescript-concur-react": "^0.3.7",
+    "purescript-naturals": "^3.0.0",
+    "purescript-dom-parser": "bbarker/purescript-dom-parser#9c91afbd752f73b6f33c5c69cb541e3c4c6bf3a9",
     "purescript-web-dom": "^2.0.0",
+    "purescript-web-dom-xpath": "^1.0.2",
     "purescript-web-events": "^2.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^4.0.0"
+    "purescript-console": "^4.2.0",
+    "purescript-debug": "^4.0.0",
+    "purescript-foreign": "^5.0.0",
+    "purescript-psci-support": "^4.0.0",
+    "purescript-test-unit": "^15.0.0"
   }
 }
