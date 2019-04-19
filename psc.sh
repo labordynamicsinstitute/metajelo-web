@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 
+# Make these directories so docker (root) does not!
+mkdir -p ~/.pulp
+mkdir -p ~/.npm
+mkdir -p ~/.npm-packages
+mkdir -p ~/.cache
+touch ~/.pulp/github-oauth-token
+
 docker run --rm -ti \
        --volume /etc/passwd:/etc/passwd:ro \
        --volume "$PWD":/wd \
-       --volume "$HOME/.gitconfig:$HOME/.gitconfig" \
+       --volume "$HOME/.gitconfig:$HOME/.gitconfig:ro" \
+       --volume "$HOME/.ssh:$HOME/.ssh:ro" \
+       --volume "$HOME/.pulp:$HOME/.pulp" \
        --volume "$HOME/.cache:$HOME/.cache" \
        --volume "$HOME/.npmrc:$HOME/.npmrc" \
        --volume "$HOME/.npm:$HOME/.npm" \
