@@ -1,6 +1,6 @@
 -- | This module is derived from the schema of metajelo,
---   and more directly from the output of XsdToHaskell
---   being run on the schema.
+-- | and more directly from the output of XsdToHaskell
+-- | being run on the schema.
 module Metajelo.Types where
 
 import Prelude
@@ -22,7 +22,7 @@ data Record = Record String
 -- TODO: change RecordType to Record when ready to
 -- TODO: compile with Main
 -- | metadata about the publication and links to unlimited 
---   number of suppementary products
+-- | number of suppementary products
 type RecordType = {
   identifier :: Identifier
 , date :: XsdDate
