@@ -15,8 +15,10 @@ import Test.Unit                         (suite, test)
 import Test.Unit.Main                    (runTest)
 import Test.Unit.Assert                  as Assert
 
-import Web.DOM.Document                  (Document, toNode)
+import Web.DOM.Document                  (Document, getElementsByTagName, toNode)
 import Web.DOM.DOMParser                 (DOMParser, makeDOMParser, parseXMLFromString)
+import Web.DOM.Element                   as Ele
+import Web.DOM.HTMLCollection            (item)
 import Web.DOM.Document.XPath            (NSResolver)
 import Web.DOM.Document.XPath            as XP
 import Web.DOM.Document.XPath.ResultType as RT
@@ -49,4 +51,11 @@ getMetajeloResolver node doc = do
       Nothing -> defNS
       Just ns -> ns
 
---TODO : need a function to get record node, and another function to get xmlns of a node
+
+recordOfDoc :: Document -> Effect (Maybe Node)
+recordOfDoc doc = do
+  recCollection <- getElementsByTagName "record" doc
+  recordMay <- item 0 recCollection
+  pure $ map Ele.toNode recordMay
+  
+--TODO and another function to get xmlns of a node
