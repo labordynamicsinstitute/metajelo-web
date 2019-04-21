@@ -9,12 +9,11 @@ recXmlnsFakeXml :: String
 recXmlnsFakeXml = """<?xml version="1.0" encoding="UTF-8"?>
 <record xmlns:re3="http://www.re3data.org/schema/2-2"
  xmlns:datacite="http://datacite.org/schema/kernel-4"
-"""
-  <> fakeXmlns <>
-"""
+ xmlns="""
+  <> "\"" <> fakeXmlns <> "\"" <> """
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.7.xsd">
-    <identifier identifierType="EISSN">OjlTjf</identifier>
+    <identifier identifierType="EISSN">XYZW</identifier>
 </record>
 """
 
