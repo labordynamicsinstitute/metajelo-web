@@ -17,14 +17,13 @@ import Test.Unit.Assert                  as Assert
 
 import Web.DOM.Document                  (Document, getElementsByTagName, toNode)
 import Web.DOM.DOMParser                 (DOMParser, makeDOMParser, parseXMLFromString)
-import Web.DOM.Element                   as Ele
-import Web.DOM.HTMLCollection            (item)
 import Web.DOM.Document.XPath            (NSResolver)
 import Web.DOM.Document.XPath            as XP
 import Web.DOM.Document.XPath.ResultType as RT
 import Web.DOM.Element                   (Element, fromNode, getAttribute)
+import Web.DOM.Element                   as Ele
+import Web.DOM.HTMLCollection            (item)
 import Web.DOM.Node                      (Node, nodeName)
-
 
 -- | The current Metajelo namespace URI, provided as a fallback
 defaultMetajeloNS :: String
@@ -57,5 +56,13 @@ recordOfDoc doc = do
   recCollection <- getElementsByTagName "record" doc
   recordMay <- item 0 recCollection
   pure $ map Ele.toNode recordMay
-  
---TODO and another function to get xmlns of a node
+
+elemXmlns :: Element -> Effect (Maybe String)
+elemXmlns elem = getAttribute "xmlns" elem
+
+nodeXmlns :: Node -> Effect (Maybe String)
+nodeXmlns node = case fromNode node of
+  Nothing -> pure Nothing
+  Just elem -> elemXmlns elem
+
+

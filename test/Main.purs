@@ -2,7 +2,7 @@ module Test.Main where
 
 import Prelude
 
-import Data.Maybe                        (Maybe(..))
+import Data.Maybe                        (Maybe(..), isJust)
 -- import Data.Natural                      (intToNat)
 -- import Debug.Trace                       (traceM)
 import Effect                            (Effect)
@@ -19,6 +19,7 @@ import Web.DOM.Document                  (Document, toNode)
 import Web.DOM.DOMParser                 (DOMParser, makeDOMParser, parseXMLFromString)
 import Web.DOM.Document.XPath            as XP
 import Web.DOM.Document.XPath.ResultType as RT
+import Web.DOM.Node                      (Node)
 
 import Metajelo.XPaths                   as MXP
 
@@ -34,8 +35,12 @@ main = runTest do
     test "getMetajeloResolver finds xmlns of record" do
       domParser <- liftEffect $ makeDOMParser
 
-      metajeloDoc <-liftEffect $ parseRecXmlnsFakeXmlDoc domParser
-      metajelo <- pure $ toNode metajeloDoc
+      metajeloDoc <- liftEffect $ parseRecXmlnsFakeXmlDoc domParser
+      metajeloMay :: Maybe Node <- liftEffect $ MXP.recordOfDoc metajeloDoc
+      Assert.assert "found record element" (isJust metajeloMay)
+      metajelo :: Node <- pure $ case metajeloMay of
+        Nothing -> toNode metajeloDoc
+        Just nd -> nd
 
       mjNSresolver <- liftEffect $ MXP.getMetajeloResolver metajelo metajeloDoc
 
@@ -53,7 +58,7 @@ main = runTest do
     test "metajelo.xml" do
       domParser <- liftEffect $ makeDOMParser
 
-      metajeloDoc <-liftEffect $ parseMetajeloDoc domParser
+      metajeloDoc <- liftEffect $ parseMetajeloDoc domParser
       metajelo <- pure $ toNode metajeloDoc
 
       mjNSresolver <- liftEffect $ MXP.getMetajeloResolver metajelo metajeloDoc
