@@ -1,4 +1,4 @@
-module Main where
+module Metajel.View where
 
 import Prelude
 
@@ -24,32 +24,25 @@ import Data.Tuple                           (Tuple, fst, snd)
 import Effect                               (Effect)
 import Effect.Class                         (liftEffect)
 import Effect.Class.Console                 (log)
-import Metajelo.Types                       as MJ
+import Metajelo.Types
 import React.SyntheticEvent                 (SyntheticMouseEvent)
 
 
--- mkRecordWidget :: MJ.Record -> forall a. Widget HTML a
--- mkRecordWidget (MJ.Record recStr) =
+mkRecordWidget :: MetajeloRecord -> forall a. Widget HTML a
+mkRecordWidget record =
+  div' [ text (recId <> " Sailor!") ]
+  where
+    recId = record.identifier.id
+
+-- mkSupplementaryProductWidget :: SupplementaryProduct -> forall a. Widget HTML a
+-- mkSupplementaryProductWidget (SupplementaryProduct recStr) =
 --   div' [ text (recStr <> " Sailor!") ]
 
--- rec1 = MJ.Record "foo"
--- rec2 = MJ.Record "bar"
+-- rec1 = MetajeloRecord "foo"
 
--- recArray :: Array MJ.Record
+-- recArray :: Array Record
 -- recArray = [rec1, rec2]
 
--- mkRecArrayWidg :: Array MJ.Record ->  forall a. Widget HTML a
--- mkRecArrayWidg ra = div' $ map mkRecordWidget ra
+-- mkProdArrayWidg :: Array SupplementaryProduct ->  forall a. Widget HTML a
+-- mkProdArrayWidg ra = div' $ map mkRecordWidget ra
 
--- main :: Effect Unit
--- main = runWidgetInDom "root" $ mkRecArrayWidg recArray
-
-hello :: forall a. Widget HTML a
-hello = do
-  greeting :: String <- orr
-    [ "Hello" <$ button [onClick] [text "Say Hello"]
-    , "Namaste" <$ button [onClick] [text "Say Namaste"]
-    ]
-  text (greeting <> " Sailor!")
-
-main = runWidgetInDom "root" $ hello

@@ -16,14 +16,9 @@ type URI = String -- TODO: use URI package?
 
 type EmailAddress = String
 
-  -- | This is currently a mockup
-data Record = Record String
-
--- TODO: change RecordType to Record when ready to
--- TODO: compile with Main
--- | metadata about the publication and links to unlimited 
+-- | metadata about the publication and links to unlimited
 -- | number of suppementary products
-type RecordType = {
+type MetajeloRecord = {
   identifier :: Identifier
 , date :: XsdDate
   -- ^ The date of the original creation of this metadata record
@@ -33,7 +28,7 @@ type RecordType = {
 , supplementaryProducts :: Array SupplementaryProduct
   -- ^ The link to the set of supplemenary products
 }
---derive instance eqRecord :: Eq RecordType
+--derive instance eqRecord :: Eq MetajeloRecord
 
 type Identifier = {
   id :: String
