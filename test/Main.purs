@@ -54,6 +54,11 @@ main = runTest do
         (MXP.defaultMetajeloNS == TD.fakeXmlns)
       Assert.equal TD.fakeXmlns retrievedNS
 
+    test "Metajelo Parsing" do
+      parseEnv <- liftEffect $ MXP.getDefaultParseEnv TD.metajeloXml
+      record <- liftEffect $ MXP.readRecord parseEnv
+      Assert.equal "OjlTjf" record.identifier.id
+
   suite "namespaced tests" do
     test "metajelo.xml" do
       domParser <- liftEffect $ makeDOMParser

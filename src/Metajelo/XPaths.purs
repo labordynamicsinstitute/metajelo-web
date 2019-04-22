@@ -9,7 +9,11 @@ import Effect                            (Effect)
 import Effect.Aff                        (Aff)
 import Effect.Class                      (liftEffect)
 import Effect.Console                    (logShow)
+import Effect.Exception                  (error, throwException)
 import Foreign                           (isUndefined, isNull, unsafeToForeign)
+
+import Metajelo.Types
+
 import Test.Data                         as TD
 import Test.Unit                         (suite, test)
 import Test.Unit.Main                    (runTest)
@@ -24,6 +28,9 @@ import Web.DOM.Element                   (Element, fromNode, getAttribute)
 import Web.DOM.Element                   as Ele
 import Web.DOM.HTMLCollection            (item)
 import Web.DOM.Node                      (Node, nodeName)
+
+import Unsafe.Coerce (unsafeCoerce)
+import Prim.TypeError (QuoteLabel, class Warn)
 
 -- | The current Metajelo namespace URI, provided as a fallback
 defaultMetajeloNS :: String
@@ -65,4 +72,56 @@ nodeXmlns node = case fromNode node of
   Nothing -> pure Nothing
   Just elem -> elemXmlns elem
 
+type ParseEnv = {
+  doc :: Document
+, recNode :: Node
+, xeval :: String -> RT.ResultType -> Effect XP.XPathResult
+}
+
+getDefaultParseEnv :: String -> Effect ParseEnv
+getDefaultParseEnv xmlDocStr = do
+  dp <- makeDOMParser
+  recDoc <- parseXMLFromString xmlDocStr dp
+  recNodeMay <- recordOfDoc recDoc
+  recNode <- case recNodeMay of
+    Nothing -> throwException $ error "Could not find <record> element!"
+    Just nd -> pure nd
+  nsRes <- getMetajeloResolver recNode recDoc
+  defEval <- pure $ mkMetajeloXpathEval recDoc recNode (Just nsRes)
+  pure $ {
+      doc: recDoc
+    , recNode: recNode
+    , xeval : defEval
+  }
+
+mkMetajeloXpathEval :: Document -> Node -> Maybe NSResolver->
+  String -> RT.ResultType  -> Effect XP.XPathResult
+mkMetajeloXpathEval doc rnode nsResMay xpath resType =
+  XP.evaluate xpath rnode nsResMay resType Nothing doc
+
+readRecord :: ParseEnv -> Effect MetajeloRecord
+readRecord env = do
+  recId <- readIdentifier env
+  recDate  <- pure undefined
+  recModDate <- pure undefined
+  recRelId <- pure undefined
+  recProds <- pure undefined
+  pure $ {
+      identifier: recId
+    , date: recDate
+    , lastModified: recModDate
+    , relatedIdentifier: recRelId
+    , supplementaryProducts: recProds
+  }
+
+readIdentifier :: ParseEnv -> Effect Identifier
+readIdentifier env = do
+  idRes <- env.xeval "/x:record/x:identifier" RT.string_type
+  recId <- XP.stringValue idRes
+  idType <- pure undefined
+  pure $ {id: recId, idType: idType}
+
+
+undefined :: forall a. Warn (QuoteLabel "undefined in use") => a
+undefined = unsafeCoerce unit
 
