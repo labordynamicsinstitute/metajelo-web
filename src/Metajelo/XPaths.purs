@@ -8,7 +8,7 @@ import Data.Natural                      (intToNat)
 import Effect                            (Effect)
 import Effect.Aff                        (Aff)
 import Effect.Class                      (liftEffect)
-import Effect.Console                    (logShow)
+import Effect.Console                    (logShow, warn)
 import Effect.Exception                  (error, throwException)
 import Foreign                           (isUndefined, isNull, unsafeToForeign)
 
@@ -84,7 +84,7 @@ getDefaultParseEnv xmlDocStr = do
   recDoc <- parseXMLFromString xmlDocStr dp
   recNodeMay <- recordOfDoc recDoc
   recNode <- case recNodeMay of
-    Nothing -> throwException $ error "Could not find <record> element!"
+    Nothing -> throwErr "Could not find <record> element!"
     Just nd -> pure nd
   nsRes <- getMetajeloResolver recNode recDoc
   defEval <- pure $ mkMetajeloXpathEval recDoc recNode (Just nsRes)
@@ -118,9 +118,36 @@ readIdentifier :: ParseEnv -> Effect Identifier
 readIdentifier env = do
   idRes <- env.xeval "/x:record/x:identifier" RT.string_type
   recId <- XP.stringValue idRes
-  idType <- pure undefined
+  idTypeRes <- env.xeval "/x:record/x:identifier/@identifierType" RT.string_type
+  idTypeStr <- XP.stringValue idTypeRes
+  idType <- readIdentifierType $ idTypeStr
   pure $ {id: recId, idType: idType}
 
+readIdentifierType :: String -> Effect IdentifierType
+readIdentifierType "ARK" = pure ARK
+readIdentifierType "ArXiv" = pure ArXiv
+readIdentifierType "Bibcode" = pure Bibcode
+readIdentifierType "DOI" = pure DOI
+readIdentifierType "EAN13" = pure EAN13
+readIdentifierType "EISSN" = pure EISSN
+readIdentifierType "Handle" = pure Handle
+readIdentifierType "IGSN" = pure IGSN
+readIdentifierType "ISBN" = pure ISBN
+readIdentifierType "ISSN" = pure ISSN
+readIdentifierType "ISTC" = pure ISTC
+readIdentifierType "LISSN" = pure LISSN
+readIdentifierType "LSID" = pure LSID
+readIdentifierType "PMID" = pure PMID
+readIdentifierType "PURL" = pure PURL
+readIdentifierType "UPC" = pure UPC
+readIdentifierType "URL" = pure URL
+readIdentifierType "URN" = pure URN
+readIdentifierType unknown =
+  throwErr $ "Unknown IdentifierType: '" <> unknown <> "'"
+
+
+throwErr :: forall a. String -> Effect a
+throwErr = throwException <<< error
 
 undefined :: forall a. Warn (QuoteLabel "undefined in use") => a
 undefined = unsafeCoerce unit

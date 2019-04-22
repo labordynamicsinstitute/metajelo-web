@@ -21,6 +21,7 @@ import Web.DOM.Document.XPath            as XP
 import Web.DOM.Document.XPath.ResultType as RT
 import Web.DOM.Node                      (Node)
 
+import Metajelo.Types                    as MJ
 import Metajelo.XPaths                   as MXP
 
 parseMetajeloDoc :: DOMParser -> Effect Document
@@ -58,6 +59,7 @@ main = runTest do
       parseEnv <- liftEffect $ MXP.getDefaultParseEnv TD.metajeloXml
       record <- liftEffect $ MXP.readRecord parseEnv
       Assert.equal "OjlTjf" record.identifier.id
+      Assert.equal MJ.EISSN record.identifier.idType
 
   suite "namespaced tests" do
     test "metajelo.xml" do

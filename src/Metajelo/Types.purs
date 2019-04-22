@@ -7,6 +7,11 @@ import Prelude
 
 import Data.Array.NonEmpty
 import Data.Maybe                           (Maybe(..))
+
+import Data.Generic.Rep                     (class Generic)
+import Data.Generic.Rep.Eq                  (genericEq)
+import Data.Generic.Rep.Show                (genericShow)
+
 -- | Stand in for xs:date
 type XsdDate = String
 
@@ -55,7 +60,12 @@ data IdentifierType
   | UPC
   | URL
   | URN
---derive instance eqIdentifier :: Eq Identifier
+--derive instance eqIdentifierType :: Eq IdentifierType
+derive instance genericIdentifierType :: Generic IdentifierType _
+instance showIdentifierType :: Show IdentifierType where
+  show = genericShow
+instance eqIdentifierType :: Eq IdentifierType where
+  eq = genericEq
 
 type SupplementaryProduct = {
   basicMetadata :: BasicMetadata
