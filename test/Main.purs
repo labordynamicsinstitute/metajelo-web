@@ -2,7 +2,8 @@ module Test.Main where
 
 import Prelude
 
-import Data.Maybe                        (Maybe(..), isJust)
+import Data.Array                        ((!!))
+import Data.Maybe                        (Maybe(..), fromJust, isJust)
 -- import Data.Natural                      (intToNat)
 -- import Debug.Trace                       (traceM)
 import Effect                            (Effect)
@@ -10,6 +11,7 @@ import Effect.Aff                        (Aff)
 import Effect.Class                      (liftEffect)
 import Effect.Console                    (logShow)
 -- import Foreign                           (isUndefined, isNull, unsafeToForeign)
+import Partial.Unsafe                    (unsafePartial)
 import Test.Data                         as TD
 import Test.Unit                         (suite, test)
 import Test.Unit.Main                    (runTest)
@@ -62,6 +64,10 @@ main = runTest do
       Assert.equal MJ.EISSN record.identifier.idType
       Assert.equal "2020-04-04" record.date
       Assert.equal "2019-05-04Z" record.lastModified
+      relId1 <- pure $ unsafePartial fromJust $ record.relatedIdentifiers !! 1
+      Assert.equal "sm3AM1NbOSx" relId1.id
+      Assert.equal MJ.PMID  relId1.idType
+      Assert.equal MJ.IsNewVersionOf relId1.relType
 
   suite "namespaced tests" do
     test "metajelo.xml" do

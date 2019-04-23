@@ -19,7 +19,7 @@
     "purescript-naturals": "^3.0.0",
     "purescript-dom-parser": "bbarker/purescript-dom-parser#9c91afbd752f73b6f33c5c69cb541e3c4c6bf3a9",
     "purescript-web-dom": "^2.0.0",
-    "purescript-web-dom-xpath": "^1.0.2",
+    "purescript-web-dom-xpath": "^1.1.0",
     "purescript-web-events": "^2.0.0"
   },
   "devDependencies": {

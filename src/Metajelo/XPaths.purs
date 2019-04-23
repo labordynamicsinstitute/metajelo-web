@@ -5,6 +5,7 @@ import Prelude
 import Data.Int                          (toNumber)
 import Data.Maybe                        (Maybe(..), fromMaybe)
 import Data.Natural                      (intToNat)
+import Data.Traversable                  (sequence)
 import Effect                            (Effect)
 import Effect.Aff                        (Aff)
 import Effect.Class                      (liftEffect)
@@ -75,7 +76,8 @@ nodeXmlns node = case fromNode node of
 type ParseEnv = {
   doc :: Document
 , recNode :: Node
-, xeval :: String -> RT.ResultType -> Effect XP.XPathResult
+, xeval :: Node -> String -> RT.ResultType -> Effect XP.XPathResult
+, xevalRoot :: String -> RT.ResultType -> Effect XP.XPathResult
 }
 
 getDefaultParseEnv :: String -> Effect ParseEnv
@@ -87,16 +89,17 @@ getDefaultParseEnv xmlDocStr = do
     Nothing -> throwErr "Could not find <record> element!"
     Just nd -> pure nd
   nsRes <- getMetajeloResolver recNode recDoc
-  defEval <- pure $ mkMetajeloXpathEval recDoc recNode (Just nsRes)
+  defEval <- pure $ mkMetajeloXpathEval recDoc (Just nsRes)
   pure $ {
       doc: recDoc
     , recNode: recNode
     , xeval : defEval
+    , xevalRoot : defEval recNode
   }
 
-mkMetajeloXpathEval :: Document -> Node -> Maybe NSResolver->
-  String -> RT.ResultType  -> Effect XP.XPathResult
-mkMetajeloXpathEval doc rnode nsResMay xpath resType =
+mkMetajeloXpathEval :: Document -> Maybe NSResolver ->
+  Node -> String -> RT.ResultType  -> Effect XP.XPathResult
+mkMetajeloXpathEval doc nsResMay rnode xpath resType =
   XP.evaluate xpath rnode nsResMay resType Nothing doc
 
 readRecord :: ParseEnv -> Effect MetajeloRecord
@@ -104,24 +107,24 @@ readRecord env = do
   recId <- readIdentifier env
   recDate  <- readDate env
   recModDate <- readModDate env
-  recRelId <- pure undefined
+  recRelIds <- readRelIdentifiers env
   recProds <- pure undefined
   pure $ {
       identifier: recId
     , date: recDate
     , lastModified: recModDate
-    , relatedIdentifier: recRelId
+    , relatedIdentifiers: recRelIds
     , supplementaryProducts: recProds
   }
 
 readIdentifier :: ParseEnv -> Effect Identifier
 readIdentifier env = do
-  idRes <- env.xeval "/x:record/x:identifier" RT.string_type
+  idRes <- env.xevalRoot "/x:record/x:identifier" RT.string_type
   recId <- XP.stringValue idRes
-  idTypeRes <- env.xeval "/x:record/x:identifier/@identifierType" RT.string_type
+  idTypeRes <- env.xevalRoot "/x:record/x:identifier/@identifierType" RT.string_type
   idTypeStr <- XP.stringValue idTypeRes
   idType <- readIdentifierType $ idTypeStr
-  pure $ {id: recId, idType: idType}
+  pure {id: recId, idType: idType}
 
 readIdentifierType :: String -> Effect IdentifierType
 readIdentifierType "ARK" = pure ARK
@@ -147,15 +150,70 @@ readIdentifierType unknown =
 
 readDate :: ParseEnv -> Effect XsdDate
 readDate env = do
-  dateRes <- env.xeval "/x:record/x:date" RT.string_type
+  dateRes <- env.xevalRoot "/x:record/x:date" RT.string_type
   recDate <- XP.stringValue dateRes
   pure recDate
 
 readModDate :: ParseEnv -> Effect XsdDate
 readModDate env = do
-  dateRes <- env.xeval "/x:record/x:lastModified" RT.string_type
+  dateRes <- env.xevalRoot "/x:record/x:lastModified" RT.string_type
   recDate <- XP.stringValue dateRes
   pure recDate
+
+readRelIdentifiers :: ParseEnv -> Effect (Array RelatedIdentifier)
+readRelIdentifiers env = do
+  idRes <- env.xevalRoot
+    "/x:record/x:relatedIdentifier" RT.ordered_node_snapshot_type
+  idNodes <- XP.snapshot idRes
+  sequence $ map getRelIdentifier idNodes
+  where
+    getRelId :: Node -> Effect String
+    getRelId nd = bind (env.xeval nd "." RT.string_type) XP.stringValue
+    getRelIdType :: Node -> Effect IdentifierType
+    getRelIdType nd = do
+      idTypeRes <- env.xeval nd "@relatedIdentifierType" RT.string_type
+      idTypeStr <- XP.stringValue idTypeRes
+      readIdentifierType idTypeStr
+    getRelRelType :: Node -> Effect RelationType
+    getRelRelType nd = do
+      idRelRes <- env.xeval nd "@relationType" RT.string_type
+      idRelStr <- XP.stringValue idRelRes
+      readRelationType idRelStr
+    getRelIdentifier :: Node -> Effect RelatedIdentifier
+    getRelIdentifier nd = do
+      recId <- getRelId nd
+      idType <- getRelIdType nd
+      relType <- getRelRelType nd
+      pure {id: recId, idType: idType, relType: relType}
+
+readRelationType :: String -> Effect RelationType
+readRelationType "IsCitedBy" = pure IsCitedBy
+readRelationType "Cites" = pure Cites
+readRelationType "IsSupplementTo" = pure IsSupplementTo
+readRelationType "IsSupplementedBy" = pure IsSupplementedBy
+readRelationType "IsContinuedBy" = pure IsContinuedBy
+readRelationType "Continues" = pure Continues
+readRelationType "IsNewVersionOf" = pure IsNewVersionOf
+readRelationType "IsPreviousVersionOf" = pure IsPreviousVersionOf
+readRelationType "IsPartOf" = pure IsPartOf
+readRelationType "HasPart" = pure HasPart
+readRelationType "IsReferencedBy" = pure IsReferencedBy
+readRelationType "References" = pure References
+readRelationType "IsDocumentedBy" = pure IsDocumentedBy
+readRelationType "Documents" = pure Documents
+readRelationType "IsCompiledBy" = pure IsCompiledBy
+readRelationType "Compiles" = pure Compiles
+readRelationType "IsVariantFormOf" = pure IsVariantFormOf
+readRelationType "IsOriginalFormOf" = pure IsOriginalFormOf
+readRelationType "IsIdenticalTo" = pure IsIdenticalTo
+readRelationType "HasMetadata" = pure HasMetadata
+readRelationType "IsMetadataFor" = pure IsMetadataFor
+readRelationType "Reviews" = pure Reviews
+readRelationType "IsReviewedBy" = pure IsReviewedBy
+readRelationType "IsDerivedFrom" = pure IsDerivedFrom
+readRelationType "IsSourceOf" = pure IsSourceOf
+readRelationType unknown =
+  throwErr $ "Unknown RelationType: '" <> unknown <> "'"
 
 throwErr :: forall a. String -> Effect a
 throwErr = throwException <<< error

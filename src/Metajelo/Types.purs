@@ -29,7 +29,7 @@ type MetajeloRecord = {
   -- ^ The date of the original creation of this metadata record
 , lastModified :: XsdDate
   -- ^ The date of the most recent modification of this recocrd
-, relatedIdentifier :: Array Identifier
+, relatedIdentifiers :: Array RelatedIdentifier
 , supplementaryProducts :: Array SupplementaryProduct
   -- ^ The link to the set of supplemenary products
 }
@@ -38,6 +38,12 @@ type MetajeloRecord = {
 type Identifier = {
   id :: String
 , idType :: IdentifierType
+}
+
+type RelatedIdentifier = {
+  id :: String
+, idType :: IdentifierType
+, relType :: RelationType
 }
 
 -- | The type of the Identifier and RelatedIdentifier.
@@ -139,6 +145,11 @@ data RelationType =
   | IsReviewedBy
   | IsDerivedFrom
   | IsSourceOf
+derive instance genericRelationType :: Generic RelationType _
+instance showRelationType :: Show RelationType where
+  show = genericShow
+instance eqRelationType :: Eq RelationType where
+  eq = genericEq
 
 type LocationType = {
   institutionID :: IdentifierType
