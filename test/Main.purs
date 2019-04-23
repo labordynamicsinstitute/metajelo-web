@@ -60,6 +60,8 @@ main = runTest do
       record <- liftEffect $ MXP.readRecord parseEnv
       Assert.equal "OjlTjf" record.identifier.id
       Assert.equal MJ.EISSN record.identifier.idType
+      Assert.equal "2020-04-04" record.date
+      Assert.equal "2019-05-04Z" record.lastModified
 
   suite "namespaced tests" do
     test "metajelo.xml" do

@@ -102,8 +102,8 @@ mkMetajeloXpathEval doc rnode nsResMay xpath resType =
 readRecord :: ParseEnv -> Effect MetajeloRecord
 readRecord env = do
   recId <- readIdentifier env
-  recDate  <- pure undefined
-  recModDate <- pure undefined
+  recDate  <- readDate env
+  recModDate <- readModDate env
   recRelId <- pure undefined
   recProds <- pure undefined
   pure $ {
@@ -145,6 +145,17 @@ readIdentifierType "URN" = pure URN
 readIdentifierType unknown =
   throwErr $ "Unknown IdentifierType: '" <> unknown <> "'"
 
+readDate :: ParseEnv -> Effect XsdDate
+readDate env = do
+  dateRes <- env.xeval "/x:record/x:date" RT.string_type
+  recDate <- XP.stringValue dateRes
+  pure recDate
+
+readModDate :: ParseEnv -> Effect XsdDate
+readModDate env = do
+  dateRes <- env.xeval "/x:record/x:lastModified" RT.string_type
+  recDate <- XP.stringValue dateRes
+  pure recDate
 
 throwErr :: forall a. String -> Effect a
 throwErr = throwException <<< error
