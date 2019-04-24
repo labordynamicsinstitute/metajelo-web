@@ -76,8 +76,8 @@ nodeXmlns node = case fromNode node of
 type ParseEnv = {
   doc :: Document
 , recNode :: Node
-, xeval :: Node -> String -> RT.ResultType -> Effect XP.XPathResult
-, xevalRoot :: String -> RT.ResultType -> Effect XP.XPathResult
+, xeval :: MJXpathEvals
+, xevalRoot :: MJXpathRootEvals
 }
 
 getDefaultParseEnv :: String -> Effect ParseEnv
@@ -89,18 +89,39 @@ getDefaultParseEnv xmlDocStr = do
     Nothing -> throwErr "Could not find <record> element!"
     Just nd -> pure nd
   nsRes <- getMetajeloResolver recNode recDoc
-  defEval <- pure $ mkMetajeloXpathEval recDoc (Just nsRes)
+  defEvals <- pure $ mkMetajeloXpathEval recDoc (Just nsRes)
   pure $ {
       doc: recDoc
     , recNode: recNode
-    , xeval : defEval
-    , xevalRoot : defEval recNode
+    , xeval : defEvals
+    , xevalRoot : {
+        any : defEvals.any recNode
+      , num : defEvals.num recNode
+      , str : defEvals.str recNode
+      , bool : defEvals.bool recNode
+    }
   }
 
-mkMetajeloXpathEval :: Document -> Maybe NSResolver ->
-  Node -> String -> RT.ResultType  -> Effect XP.XPathResult
-mkMetajeloXpathEval doc nsResMay rnode xpath resType =
-  XP.evaluate xpath rnode nsResMay resType Nothing doc
+type MJXpathEvals = {
+    any  :: Node -> String -> RT.ResultType -> Effect XP.XPathResult
+  , num  :: Node -> String -> Effect Number
+  , str  :: Node -> String -> Effect String
+  , bool :: Node -> String -> Effect Boolean
+}
+type MJXpathRootEvals = {
+    any  :: String -> RT.ResultType -> Effect XP.XPathResult
+  , num  :: String -> Effect Number
+  , str  :: String -> Effect String
+  , bool :: String -> Effect Boolean
+}
+
+mkMetajeloXpathEval :: Document -> Maybe NSResolver -> MJXpathEvals
+mkMetajeloXpathEval doc nsResMay = {
+    any : (\n x r -> XP.evaluate x n nsResMay r Nothing doc)
+  , num : (\n x -> XP.evaluateNumber x n nsResMay Nothing doc)
+  , str : (\n x -> XP.evaluateString x n nsResMay Nothing doc)
+  , bool : (\n x -> XP.evaluateBoolean x n nsResMay Nothing doc)
+}
 
 readRecord :: ParseEnv -> Effect MetajeloRecord
 readRecord env = do
@@ -119,10 +140,8 @@ readRecord env = do
 
 readIdentifier :: ParseEnv -> Effect Identifier
 readIdentifier env = do
-  idRes <- env.xevalRoot "/x:record/x:identifier" RT.string_type
-  recId <- XP.stringValue idRes
-  idTypeRes <- env.xevalRoot "/x:record/x:identifier/@identifierType" RT.string_type
-  idTypeStr <- XP.stringValue idTypeRes
+  recId <- env.xevalRoot.str "/x:record/x:identifier"
+  idTypeStr <- env.xevalRoot.str "/x:record/x:identifier/@identifierType"
   idType <- readIdentifierType $ idTypeStr
   pure {id: recId, idType: idType}
 
@@ -149,35 +168,27 @@ readIdentifierType unknown =
   throwErr $ "Unknown IdentifierType: '" <> unknown <> "'"
 
 readDate :: ParseEnv -> Effect XsdDate
-readDate env = do
-  dateRes <- env.xevalRoot "/x:record/x:date" RT.string_type
-  recDate <- XP.stringValue dateRes
-  pure recDate
+readDate env = env.xevalRoot.str "/x:record/x:date"
 
 readModDate :: ParseEnv -> Effect XsdDate
-readModDate env = do
-  dateRes <- env.xevalRoot "/x:record/x:lastModified" RT.string_type
-  recDate <- XP.stringValue dateRes
-  pure recDate
+readModDate env = env.xevalRoot.str "/x:record/x:lastModified"
 
 readRelIdentifiers :: ParseEnv -> Effect (Array RelatedIdentifier)
 readRelIdentifiers env = do
-  idRes <- env.xevalRoot
+  idRes <- env.xevalRoot.any
     "/x:record/x:relatedIdentifier" RT.ordered_node_snapshot_type
   idNodes <- XP.snapshot idRes
   sequence $ map getRelIdentifier idNodes
   where
     getRelId :: Node -> Effect String
-    getRelId nd = bind (env.xeval nd "." RT.string_type) XP.stringValue
+    getRelId nd = env.xeval.str nd "."
     getRelIdType :: Node -> Effect IdentifierType
     getRelIdType nd = do
-      idTypeRes <- env.xeval nd "@relatedIdentifierType" RT.string_type
-      idTypeStr <- XP.stringValue idTypeRes
+      idTypeStr <- env.xeval.str nd "@relatedIdentifierType"
       readIdentifierType idTypeStr
     getRelRelType :: Node -> Effect RelationType
     getRelRelType nd = do
-      idRelRes <- env.xeval nd "@relationType" RT.string_type
-      idRelStr <- XP.stringValue idRelRes
+      idRelStr <- env.xeval.str nd "@relationType"
       readRelationType idRelStr
     getRelIdentifier :: Node -> Effect RelatedIdentifier
     getRelIdentifier nd = do
