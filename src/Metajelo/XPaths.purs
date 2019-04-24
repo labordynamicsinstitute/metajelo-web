@@ -226,6 +226,29 @@ readRelationType "IsSourceOf" = pure IsSourceOf
 readRelationType unknown =
   throwErr $ "Unknown RelationType: '" <> unknown <> "'"
 
+
+readSupplementaryProducts :: ParseEnv -> Effect (Array SupplementaryProduct)
+readSupplementaryProducts env = do
+  prodsRes <- env.xevalRoot.any
+    "/x:record/x:supplementaryProducts/x:supplementaryProduct"
+    RT.ordered_node_snapshot_type
+  prodNodes <- XP.snapshot prodsRes
+  sequence $ map getProduct prodNodes
+  where
+    getResId :: Node -> Effect String
+    getResId nd = env.xeval.str nd "resourceID"
+    getResIdType :: Node -> Effect IdentifierType
+    getResIdType nd = do
+      idTypeStr <- env.xeval.str nd "resourceID/@relatedIdentifierType"
+      readIdentifierType idTypeStr
+    getProduct :: Node -> Effect RelatedIdentifier
+    getProduct nd = do
+      basicMetadata <- pure undefined
+      resId <- getResId nd
+      idType <- getResIdType nd
+      relType <- getResResType nd
+        pure {basicMetadata, resourceID: {id: resId, idType: idType}, idType: idType, relType: relType}
+
 throwErr :: forall a. String -> Effect a
 throwErr = throwException <<< error
 
