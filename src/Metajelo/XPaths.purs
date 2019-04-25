@@ -2,6 +2,7 @@ module Metajelo.XPaths where
 
 import Prelude
 
+import Control.Apply                     (lift2)
 import Data.Int                          (toNumber)
 import Data.Maybe                        (Maybe(..), fromMaybe)
 import Data.Natural                      (intToNat)
@@ -129,7 +130,7 @@ readRecord env = do
   recDate  <- readDate env
   recModDate <- readModDate env
   recRelIds <- readRelIdentifiers env
-  recProds <- pure undefined
+  recProds <- readSupplementaryProducts env
   pure $ {
       identifier: recId
     , date: recDate
@@ -238,7 +239,7 @@ readSupplementaryProducts env = do
     getProduct :: Node -> Effect RelatedIdentifier
     getProduct nd = do
       basicMetadata <- pure undefined
-      resId <- readResourceID nd
+      resId <- readResourceID env nd
       resourceType <- pure undefined
       format <- pure undefined
       resourceMetadataSource <- pure undefined
@@ -254,11 +255,11 @@ readSupplementaryProducts env = do
 
 readResourceID :: ParseEnv -> Node -> Effect (Maybe ResourceID)
 readResourceID env prodNode = do
-  resIdres <- env.xeval.any prodNode "resourceID" RT.any_unordered_node_type
+  resIdres :: XP.XPathResult <- env.xeval.any prodNode "resourceID" RT.any_unordered_node_type
   resIdNodeMay :: Maybe Node <- XP.singleNodeValue resIdres
-  resIdMay :: Maybe String <- pure $ map getResId resIdNodeMay
-  resIdTypeMay :: Maybe IdentifierType <- pure $ map getResIdType resIdNodeMay
-  pure $ combineIdBits resIdMay resIdTypeMay
+  resIdMay :: Maybe (Effect String) <- pure $ map getResId resIdNodeMay
+  resIdTypeMay :: Maybe (Effect IdentifierType) <- pure $ map getResIdType resIdNodeMay
+  combineIdBits resIdMay resIdTypeMay
   where
     getResId :: Node -> Effect String
     getResId nd = env.xeval.str nd "."
@@ -268,11 +269,10 @@ readResourceID env prodNode = do
       readIdentifierType idTypeStr
     combineIdBits :: Maybe (Effect String) -> Maybe (Effect IdentifierType)
       -> Effect (Maybe ResourceID)
-    combineIdBits idMay idTypeMay = do
+    combineIdBits idMay idTypeMay = sequence $ do
       idEff <- idMay
       idTypeEff <- idTypeMay
-      
-      pure {id: id, idType: idType}
+      pure $ lift2 (\i t -> {id: i, idType: t}) idEff idTypeEff
 
 throwErr :: forall a. String -> Effect a
 throwErr = throwException <<< error
