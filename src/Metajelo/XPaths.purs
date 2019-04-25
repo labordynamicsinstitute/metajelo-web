@@ -235,19 +235,44 @@ readSupplementaryProducts env = do
   prodNodes <- XP.snapshot prodsRes
   sequence $ map getProduct prodNodes
   where
-    getResId :: Node -> Effect String
-    getResId nd = env.xeval.str nd "resourceID"
-    getResIdType :: Node -> Effect IdentifierType
-    getResIdType nd = do
-      idTypeStr <- env.xeval.str nd "resourceID/@relatedIdentifierType"
-      readIdentifierType idTypeStr
     getProduct :: Node -> Effect RelatedIdentifier
     getProduct nd = do
       basicMetadata <- pure undefined
-      resId <- getResId nd
-      idType <- getResIdType nd
-      relType <- getResResType nd
-        pure {basicMetadata, resourceID: {id: resId, idType: idType}, idType: idType, relType: relType}
+      resId <- readResourceID nd
+      resourceType <- pure undefined
+      format <- pure undefined
+      resourceMetadataSource <- pure undefined
+      location <- pure undefined
+      pure {
+          basicMetadata: basicMetadata
+        , resourceID: resId
+        , resourceType: resourceType
+        , format: format
+        , resourceMetadataSource: resourceMetadataSource
+        , location: location
+      }
+
+readResourceID :: ParseEnv -> Node -> Effect (Maybe ResourceID)
+readResourceID env prodNode = do
+  resIdres <- env.xeval.any prodNode "resourceID" RT.any_unordered_node_type
+  resIdNodeMay :: Maybe Node <- XP.singleNodeValue resIdres
+  resIdMay :: Maybe String <- pure $ map getResId resIdNodeMay
+  resIdTypeMay :: Maybe IdentifierType <- pure $ map getResIdType resIdNodeMay
+  pure $ combineIdBits resIdMay resIdTypeMay
+  where
+    getResId :: Node -> Effect String
+    getResId nd = env.xeval.str nd "."
+    getResIdType :: Node -> Effect IdentifierType
+    getResIdType nd = do
+      idTypeStr <- env.xeval.str nd "@relatedIdentifierType"
+      readIdentifierType idTypeStr
+    combineIdBits :: Maybe (Effect String) -> Maybe (Effect IdentifierType)
+      -> Effect (Maybe ResourceID)
+    combineIdBits idMay idTypeMay = do
+      idEff <- idMay
+      idTypeEff <- idTypeMay
+      
+      pure {id: id, idType: idType}
 
 throwErr :: forall a. String -> Effect a
 throwErr = throwException <<< error
