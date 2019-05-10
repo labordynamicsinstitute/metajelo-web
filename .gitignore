@@ -1,0 +1,18 @@
+/bower_components/
+/.cache
+/dist/
+/testdist/
+/node_modules/
+/.pulp-cache/
+/output/
+/generated-docs/
+/.psc-package/
+/.psc*
+/.purs*
+/.psa*
+
+
+# Temp files:
+*~
+\.\#*
+.xdg*

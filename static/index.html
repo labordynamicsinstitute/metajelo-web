@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang=en>
+    <head>
+        <meta charset=utf-8>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Tests for purescript-web-xpath</title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/combine/npm/purecss@1.0.0/build/base-min.css,npm/purecss@1.0.0/build/grids-responsive-min.css">
+        <!-- add other Pure modules above, e.g.: npm/purecss@1.0.0/build/forms-min.css -->
+        <script type="application/javascript" src="index.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <div class= "pure-g">
+            <div class="pure-u-1-1">
+                <div id="metajelo_root"></div>
+            </div>
+        </div>
+        <form enctype="multipart/form-data">
+            <input id="metajelo_upload"
+                   type=file accept="application/xml" name="files[]" size=30>
+        </form>
+
+        <button onclick="handleFileEdit();">Process XML!</button>
+        <textarea class="form-control"
+                  rows=35 cols=120
+                  placeholder="Type your Metajelo here!"
+                  id="metajelo_xml_entry"></textarea>
+        <script>
+         function handleFileEdit() {
+             var xmlTxt = document.getElementById('metajelo_xml_entry').value;
+             Metajelo.renderRecord('metajelo_root')(xmlTxt)();
+
+         };
+         function handleFileSelect(evt) {
+             var files = evt.target.files; // FileList object
+
+             // use the 1st file from the list
+             file = files[0];
+
+             var reader = new FileReader();
+
+             // Closure to capture the file information.
+             reader.onload = (function(theFile) {
+                 return function(ev) {
+                     Metajelo.renderRecord("metajelo_root")(ev.target.result)();
+                 };
+             })(file);
+
+             // Read in the image file as a data URL.
+             reader.readAsText(file);
+         }
+
+         document.getElementById('metajelo_upload')
+                 .addEventListener('change', handleFileSelect, false);
+        </script>
+        <br />
+    </body>
+</html>
