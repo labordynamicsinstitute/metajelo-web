@@ -29,6 +29,7 @@ import Data.String.Utils                    (endsWith, fromCharArray)
 import Data.Tuple                           (Tuple, fst, snd)
 import Data.Unfoldable                      (fromMaybe)
 import Data.Unfoldable1                     (class Unfoldable1, singleton)
+import Effect.Exception                     as EX
 import Foreign.Object                       as FO
 import Metajelo.Types
 import React.SyntheticEvent                 (SyntheticMouseEvent)

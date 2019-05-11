@@ -53,7 +53,7 @@ html {
 }
 
 .metajelo_productCitation {
-  font-eight: 650;
+  font-weight: 650;
   background-color: #FFFEA8;
   padding: 2px;
   -moz-border-radius: 5px;
@@ -61,6 +61,22 @@ html {
   -o-border-radius: 5px;
   -ms-border-radius: 5px;
   border-radius: 5px;
+}
+
+.metajelo_errorDisplay {
+  font-weight: 650;
+  color: #ffffff;
+  background-color: #f44336;
+  padding: 10px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -o-border-radius: 20px;
+  -ms-border-radius: 20px;
+  border-radius: 20px;
+}
+
+.metajelo_errorDisplayBox {
+  padding: 15px;
 }
 
 /* -----------------------------------------------------------------------------
