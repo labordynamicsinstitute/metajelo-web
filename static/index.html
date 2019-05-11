@@ -15,12 +15,22 @@
                 <div id="metajelo_root"></div>
             </div>
         </div>
-        <form enctype="multipart/form-data">
-            <input id="metajelo_upload"
-                   type=file accept="application/xml" name="files[]" size=30>
-        </form>
-
-        <button onclick="handleFileEdit();">Process XML!</button>
+        <span>
+            <form enctype="multipart/form-data">
+                <label>Upload XML:</label>
+                <input id="metajelo_upload"
+                       type=file accept="application/xml" name="files[]" size=30>
+            </form>
+        </span>
+        <br />
+        <span>
+           <p>
+               Or, enter XML below for iterative editing.
+           </p>
+           <br />
+           <button onclick="handleFileEdit();">Process XML!</button>
+        </span>
+        <br />
         <textarea class="form-control"
                   rows=35 cols=120
                   placeholder="Type your Metajelo here!"
