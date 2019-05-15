@@ -21,7 +21,7 @@ import Control.MultiAlternative             (orr)
 import Data.Maybe                           (Maybe(..), isNothing)
 import Data.Traversable                     (traverse)
 import Data.Array                           ((..), (!!), length, init, zip)
-import Data.Foldable                        (any, fold, intercalate)
+import Data.Foldable                        (any, fold, foldMap, intercalate)
 import Data.Function                        ((#))
 import Data.Semigroup                       (class Semigroup)
 import Data.String                          as S
@@ -55,9 +55,7 @@ toCharArray :: String -> Array String
 toCharArray = map S.singleton <<< S.toCodePointArray
 
 initMonoid :: forall m. Monoid m => Array m -> Array m
-initMonoid elems = case init elems of
-  Nothing -> mempty
-  Just ms -> ms
+initMonoid elems = foldMap identity (init elems)
 
 -- | Adds punctuation at the end of a text fragement; useful
 -- | for dealing with optional values (set skip = false if not
@@ -228,6 +226,16 @@ idUrl {id, idType: UPC} = citeId id
 idUrl {id, idType: URL} = a [href id] [citeId id]
 idUrl {id, idType: URN} = citeId id
 
+policyWidg :: InstitutionPolicy -> forall a. Widget HTML a
+policyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] [
+  foldMap showPolicyType ipol.policyType
+]
+  where
+    showPolicyType :: PolicyType -> forall a. Widget HTML a
+    showPolicyType polType = span' [
+      span [className $ mjCssPfx "policyType"] [text $ show polType]
+    , text $ " Policy"
+    ]
 
 -- mkProdArrayWidg :: Array SupplementaryProduct ->  forall a. Widget HTML a
 -- mkProdArrayWidg ra = div' $ map mkRecordWidget ra
