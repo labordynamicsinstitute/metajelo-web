@@ -262,12 +262,13 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
         RefPolicy url -> let urlStr = urlToString url in
           a [href $ urlStr] [text urlStr]
     appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
-    appliesWidg appliesMay = span [cList [mjIcClass, sqClass]] [mempty]
+    appliesWidg appliesMay = span [cList [mjIcClass, sq.cls]] [info sq.text]
       where
-        sqClass = case appliesMay of
-          Nothing -> mjIcSq
-          Just true -> mjIcCheckSq
-          Just false -> mjIcMinusSq
+        sq = case appliesMay of
+          Nothing -> {text: "May apply to product (unverified)", cls: mjIcSq}
+          Just true -> {text: "Applies to product", cls: mjIcCheckSq}
+          Just false ->{text: "Does not apply to product", cls: mjIcMinusSq}
+        info txt = span [className $ mjCssPfx "applies_info"] [text txt]
 
 --TODO: use upstream when merged
 group :: forall a f u. Foldable f => Functor f => Unfoldable1 u => Semigroup (u a) =>

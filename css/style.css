@@ -105,6 +105,10 @@ html {
   font-style: italic;
 }
 
+.metajelo_applies_info {
+   display: none;
+}
+
 /* -----------------------------------------------------------------------------
 
   MEDIA ELEMENTS
