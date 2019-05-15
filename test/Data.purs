@@ -12,7 +12,7 @@ recXmlnsFakeXml = """<?xml version="1.0" encoding="UTF-8"?>
  xmlns="""
   <> "\"" <> fakeXmlns <> "\"" <> """
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.7.xsd">
+ xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.8.xsd">
     <identifier identifierType="EISSN">XYZW</identifier>
 </record>
 """

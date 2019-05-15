@@ -15,7 +15,7 @@
  xmlns:datacite="http://datacite.org/schema/kernel-4"
  xmlns="http://ourdomain.cornell.edu/reuse/v.01"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.7.xsd">
+ xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.8.xsd">
     <identifier identifierType="EISSN">OjlTjf</identifier>
     <date>2020-04-04</date>
     <lastModified>2019-05-04Z</lastModified>
@@ -114,6 +114,10 @@
            </p>
            <br />
            <button onclick="handleFileEdit();">Process XML!</button>
+           <input value='Save XML' type='button'
+                  onclick='doDownload(document.getElementById("metajelo_xml_entry").value)' />
+
+
         </span>
         <br />
         <textarea class="form-control"
@@ -121,34 +125,47 @@
                   placeholder="Type your Metajelo here!"
                   id="metajelo_xml_entry"></textarea>
         <script>
-         function handleFileEdit() {
-             var xmlTxt = document.getElementById('metajelo_xml_entry').value;
-             Metajelo.renderRecord('metajelo_root')(xmlTxt)();
+            function handleFileEdit() {
+            var xmlTxt = document.getElementById('metajelo_xml_entry').value;
+            Metajelo.renderRecord('metajelo_root')(xmlTxt)();
 
-         };
-         function handleFileSelect(evt) {
-             var files = evt.target.files; // FileList object
+            };
+            function handleFileSelect(evt) {
+            var files = evt.target.files; // FileList object
 
-             // use the 1st file from the list
-             file = files[0];
+            // use the 1st file from the list
+            file = files[0];
 
-             var reader = new FileReader();
+            var reader = new FileReader();
 
-             // Closure to capture the file information.
-             reader.onload = (function(theFile) {
-                 return function(ev) {
-                     Metajelo.renderRecord("metajelo_root")(ev.target.result)();
-                 };
-             })(file);
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+            return function(ev) {
+            Metajelo.renderRecord("metajelo_root")(ev.target.result)();
+            };
+            })(file);
 
-             // Read in the image file as a data URL.
-             reader.readAsText(file);
-         }
+            // Read in the image file as a data URL.
+            reader.readAsText(file);
+            }
 
-         document.getElementById('metajelo_upload')
-                 .addEventListener('change', handleFileSelect, false);
-         document.getElementById('metajelo_xml_entry')
-                 .defaultValue = document.getElementById("autogen_mj_xml").innerText;
+            function doDownload(str) {
+              function dataUrl(data) {
+                return "data:x-application/xml;charset=utf-8," + escape(data);
+              }
+              var downloadLink = document.createElement("a");
+              downloadLink.href = dataUrl(str);
+              downloadLink.download = "metajelo.xml";
+
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              document.body.removeChild(downloadLink);
+            }
+
+        document.getElementById('metajelo_upload')
+        .addEventListener('change', handleFileSelect, false);
+        document.getElementById('metajelo_xml_entry')
+        .defaultValue = document.getElementById("autogen_mj_xml").innerText;
         </script>
         <br />
     </body>
