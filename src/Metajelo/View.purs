@@ -8,10 +8,10 @@ import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     (El', a, br', button, button', cite',
                                              div, div_, div', em',
-                                             input, li, nav, p',
+                                             input, li, li', nav, p',
                                              span, span', text, ul
                                              )
-import Concur.React.Props                   (_type, checked, classList,
+import Concur.React.Props                   (Props, _type, checked, classList,
                                              href, className, onChange,
                                              onClick, onFocus,
                                              unsafeTargetValue, value)
@@ -44,6 +44,21 @@ import Data.Profunctor.Strong ((&&&))
 
 mjCssPfx :: String -> String
 mjCssPfx cname = "metajelo_" <> cname
+
+cList :: forall a. Array String -> Props a
+cList cs = classList $ map Just cs
+
+mjIcClass :: String
+mjIcClass = mjCssPfx "icon"
+
+mjIcSq :: String
+mjIcSq = mjCssPfx "icon-square-o"
+
+mjIcMinusSq :: String
+mjIcMinusSq = mjCssPfx "icon-minus-square-o"
+
+mjIcCheckSq :: String
+mjIcCheckSq = mjCssPfx "icon-check-square-o"
 
 spc :: forall a. Widget HTML a
 spc = span' [text " "]
@@ -165,6 +180,8 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
           [text "Funding Statement"]
       , text "."
       ]
+    , ul [className $ mjCssPfx "institutionPolicies"] $
+        map (\ip -> li' [ipolicyWidg ip]) $ NA.toArray loc.institutionPolicies
     ]
 
 contactWidg :: InstitutionContact -> forall a. Widget HTML a
@@ -226,19 +243,31 @@ idUrl {id, idType: UPC} = citeId id
 idUrl {id, idType: URL} = a [href id] [citeId id]
 idUrl {id, idType: URN} = citeId id
 
-policyWidg :: InstitutionPolicy -> forall a. Widget HTML a
-policyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] [
-  foldMap showPolicyType ipol.policyType
+ipolicyWidg :: InstitutionPolicy -> forall a. Widget HTML a
+ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
+  appliesWidg ipol.appliesToProduct
+, foldMap policyTypeWidg ipol.policyType
+, policyWidg ipol.policy
 ]
   where
-    showPolicyType :: PolicyType -> forall a. Widget HTML a
-    showPolicyType polType = span' [
+    policyTypeWidg :: PolicyType -> forall a. Widget HTML a
+    policyTypeWidg polType = span' [
       span [className $ mjCssPfx "policyType"] [text $ show polType]
     , text $ " Policy"
     ]
-
--- mkProdArrayWidg :: Array SupplementaryProduct ->  forall a. Widget HTML a
--- mkProdArrayWidg ra = div' $ map mkRecordWidget ra
+    policyWidg :: Policy -> forall a. Widget HTML a
+    policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
+      case pol of
+        FreeTextPolicy txt -> text txt
+        RefPolicy url -> let urlStr = urlToString url in
+          a [href $ urlStr] [text urlStr]
+    appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
+    appliesWidg appliesMay = span [cList [mjIcClass, sqClass]] [mempty]
+      where
+        sqClass = case appliesMay of
+          Nothing -> mjIcSq
+          Just true -> mjIcCheckSq
+          Just false -> mjIcMinusSq
 
 --TODO: use upstream when merged
 group :: forall a f u. Foldable f => Functor f => Unfoldable1 u => Semigroup (u a) =>

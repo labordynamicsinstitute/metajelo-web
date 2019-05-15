@@ -23,7 +23,7 @@ metajeloXml = """<?xml version="1.0" encoding="UTF-8"?>
  xmlns:datacite="http://datacite.org/schema/kernel-4"
  xmlns="http://ourdomain.cornell.edu/reuse/v.01"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.7.xsd">
+ xsi:schemaLocation="http://ourdomain.cornell.edu/reuse/v.01 file:/Users/clagoze/Downloads/metajelo-master/schema/xsd/reproMetadata0.8.xsd">
     <identifier identifierType="EISSN">OjlTjf</identifier>
     <date>2020-04-04</date>
     <lastModified>2019-05-04Z</lastModified>
