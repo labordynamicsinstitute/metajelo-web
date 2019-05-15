@@ -253,7 +253,7 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
     policyTypeWidg :: PolicyType -> forall a. Widget HTML a
     policyTypeWidg polType = span' [
       span [className $ mjCssPfx "policyType"] [text $ show polType]
-    , text $ " Policy"
+    , text $ " Policy:"
     ]
     policyWidg :: Policy -> forall a. Widget HTML a
     policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
