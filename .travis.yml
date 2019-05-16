@@ -5,6 +5,7 @@ services:
 
 # the docker image is custom
 script:
+- ls -al
 - ./scripts/dist_build.sh
 #- docker exec metajelo_web_builder ./scripts/dist_build_commands.sh
 #- docker stop metajelo_web_builder
