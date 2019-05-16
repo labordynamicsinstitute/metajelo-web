@@ -47,9 +47,8 @@ else
          --user "node" \
          --volume "$PWD":/wd \
          --workdir /wd \
-          --detach=true \
          --name "${CONT_NAME}" \
-         "${DHUB_PREFIX}${IMG_NAME}:${IMG_VER}" sleep 10000
+         "${DHUB_PREFIX}${IMG_NAME}:${IMG_VER}" /wd/scripts/dist_build_commands.sh
 
 fi
 # Now you can run some commands, e.g.:
