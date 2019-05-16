@@ -1,6 +1,6 @@
 module Metajelo where
 
-import Prelude
+import Prelude                              (Unit, bind, pure, ($), (<>))
 
 import Concur.React.Run                     (runWidgetInDom)
 import Concur.React.DOM                     (div, span, text)

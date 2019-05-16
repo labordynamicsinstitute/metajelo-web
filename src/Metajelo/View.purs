@@ -1,14 +1,18 @@
 module Metajelo.View where
 
-import Prelude
+import Prelude                             (class Functor, class Monoid,
+                                            class Semigroup,
+                                            identity, join, map, mempty, show,
+                                            (#), ($), (<<<), (<>))
+
 
 import Concur.Core                          (Widget)
 import Concur.Core.Types                    (andd)
 import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
-import Concur.React.DOM                     (El', a, br', button, button', cite',
-                                             div, div_, div', em',
-                                             input, li, li', nav, p',
+import Concur.React.DOM                     (a, br', cite',
+                                             div, div',
+                                             li, li',
                                              span, span', text, ul
                                              )
 import Concur.React.Props                   (Props, _type, checked, classList,
