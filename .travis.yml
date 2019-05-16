@@ -3,6 +3,7 @@ language: minimal
 services:
   - docker
 
+# the docker image is custom
 script:
 - ./scripts/dist_build.sh
 - docker exec metajelo_web_builder ./scripts/dist_build_commands.sh
