@@ -1,4 +1,7 @@
 # metajelo-web
+
+[![Build Status](https://travis-ci.com/labordynamicsinstitute/metajelo-web.svg?token=fzz41xcnJ15QPD7QhZkZ&branch=master)](https://travis-ci.com/labordynamicsinstitute/metajelo-web)
+
 Web tools to display
 [metajelo](https://github.com/labordynamicsinstitute/metajelo) packages.
 
