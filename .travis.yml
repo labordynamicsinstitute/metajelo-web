@@ -3,12 +3,11 @@ language: minimal
 services:
   - docker
 
-# the docker image is custom
-script:
+before_script:
 - chmod a+w . *
-- ./scripts/dist_build.sh
-#- docker exec metajelo_web_builder ./scripts/dist_build_commands.sh
-#- docker stop metajelo_web_builder
+
+script:
+- IMG_VER=0.12.5 ./scripts/dist_build.sh
 
 deploy:
   provider: pages
