@@ -1,0 +1,19 @@
+language: minimal
+
+services:
+  - docker
+
+script:
+- ./scripts/dist_build.sh
+- docker exec metajelo_web_builder ./scripts/dist_build_commands.sh
+- docker stop metajelo_web_builder
+
+deploy:
+  provider: pages
+  local_dir: dist
+  target_branch: gh-pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  on:
+    branch: master

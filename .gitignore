@@ -6,6 +6,7 @@
 /.pulp-cache/
 /output/
 /generated-docs/
+/.npm/
 /.psc-package/
 /.psc*
 /.purs*

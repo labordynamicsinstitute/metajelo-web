@@ -7,43 +7,30 @@ import Prelude                             (class Functor, class Monoid,
 
 
 import Concur.Core                          (Widget)
-import Concur.Core.Types                    (andd)
-import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     (a, br', cite',
                                              div, div',
                                              li, li',
                                              span, span', text, ul
                                              )
-import Concur.React.Props                   (Props, _type, checked, classList,
-                                             href, className, onChange,
-                                             onClick, onFocus,
-                                             unsafeTargetValue, value)
-import Control.Alt                          ((<|>))
-import Control.Monad.Rec.Class              (forever)
-import Control.MultiAlternative             (orr)
+import Concur.React.Props                   (Props, classList,
+                                             href, className)
 import Data.Maybe                           (Maybe(..), isNothing)
-import Data.Traversable                     (traverse)
-import Data.Array                           ((..), (!!), length, init, zip)
-import Data.Foldable                        (any, fold, foldMap, intercalate)
-import Data.Function                        ((#))
-import Data.Semigroup                       (class Semigroup)
+import Data.Array                           (init)
+import Data.Foldable                        (class Foldable, any,
+                                             foldMap, intercalate)
 import Data.String                          as S
 import Data.String.Utils                    (endsWith, fromCharArray)
-import Data.Tuple                           (Tuple, fst, snd)
 import Data.Unfoldable                      (fromMaybe)
 import Data.Unfoldable1                     (class Unfoldable1, singleton)
-import Effect.Exception                     as EX
 import Foreign.Object                       as FO
 import Metajelo.Types
-import React.SyntheticEvent                 (SyntheticMouseEvent)
 import Text.Email.Validate                  as EA
 import URL.Validator                        (urlToString)
 
 -- Temp imports for group -- TODO: remove
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NA
-import Data.Foldable (class Foldable)
 import Data.Profunctor.Strong ((&&&))
 
 mjCssPfx :: String -> String

@@ -8,7 +8,7 @@
     "clean": "rimraf output && rimraf .pulp-cache && rm -fr dist",
     "build": "bower install && pulp build -- --censor-lib --strict",
     "ps": "bower install && pulp build",
-    "prod": "npm run ps && parcel --no-hmr --public-url ./ build static/index.html",
+    "prod": "npm run ps && parcel build --public-url ./ static/index.html",
     "start": "parcel --no-hmr --public-url ./ static/index.html",
     "watch": "parcel watch static/index.html"
   },
@@ -27,8 +27,8 @@
     "rimraf": "^2.6.3"
   },
   "dependencies": {
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "browserslist": [
     "defaults"
