@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+GCC=$(npm bin)/google-closure-compiler
+echo $GCC
+
+# rimraf dist && spago build && parcel build --public-url ./ static/index.html
+
+
+rimraf prod dist && mkdir prod && spago bundle --main Main --to prod/index.prod.js && \
+  "$GCC" --js prod/index.prod.js --js_output_file prod/index.js && \
+  cp static/index.html prod/index.html && parcel build --public-url ./ prod/index.html && rimraf prod
