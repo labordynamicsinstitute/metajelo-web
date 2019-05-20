@@ -116,6 +116,64 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions = { metajelo =
+  mkPackage
+    [ "generics-rep"
+    , "naturals"
+    , "email-validate"
+    , "stringutils"
+    , "url-validator"
+    , "web-dom"
+    , "web-dom-parser"
+    , "web-dom-xpath"
+    ]
+    "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
+    "v1.0.0"
+, naturals =
+   mkPackage
+     [ "enums"
+     , "maybe"
+     , "prelude"
+     ]
+     "https://github.com/LiamGoodacre/purescript-naturals.git"
+     "v3.0.0"
+, stringutils =
+   mkPackage
+     [ "strings"
+     , "partial"
+     , "arrays"
+     , "either"
+     , "maybe"
+     , "prelude"
+     , "integers"
+     ]
+     "https://github.com/menelaos/purescript-stringutils.git"
+     "v0.0.8"
+, url-validator =
+   mkPackage
+     [ "nullable"
+     ]
+     "https://github.com/bbarker/purescript-url-validator.git"
+     "v1.1.0"
+, web-dom-parser =
+   mkPackage
+     [ "prelude"
+     , "effect"
+     , "partial"
+     , "web-dom"
+     ]
+     "https://github.com/purescript-web/purescript-web-dom-parser.git"
+     "v5.0.0"
+, web-dom-xpath =
+   mkPackage
+     [ "prelude"
+     , "effect"
+     , "partial"
+     , "web-dom"
+     ]
+     "https://github.com/purescript-web/purescript-web-dom-xpath.git"
+     "v1.2.0"
+
+}
 
 in  upstream // overrides // additions
