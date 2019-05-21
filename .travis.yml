@@ -4,14 +4,14 @@ services:
   - docker
 
 before_script:
-- chmod a+w . *
+- chmod a+w -R .
 
 script:
 - IMG_VER=0.12.5 ./scripts/dist_build.sh
 
 deploy:
   provider: pages
-  local_dir: dist
+  local_dir: app/dist
   target_branch: gh-pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN

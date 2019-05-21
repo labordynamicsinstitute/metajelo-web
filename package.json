@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "testbrowser": "../scripts/testbrowser",
-    "clean": "rimraf output && rimraf .cache .psci_modules .pulp-cache .spago dist prod testdist",
+    "clean": "rimraf output .cache .psci_modules .pulp-cache .spago dist prod testdist",
     "build": "spago build",
     "prod": "../scripts/prod",
     "start": "spago build && parcel --no-hmr --public-url ./ static/index.html",
