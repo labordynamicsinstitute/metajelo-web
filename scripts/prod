@@ -3,10 +3,8 @@
 GCC=$(npm bin)/google-closure-compiler
 echo $GCC
 
-# rimraf dist && spago build && parcel build --public-url ./ static/index.html
-
 preGccBuildSteps () {
-  rimraf prod dist && mkdir prod && ln -sfn ../css prod/css && \
+  rimraf prod dist && mkdir prod && ln -sfn ../../css prod/css && \
     spago build && \
     cp static/index.* prod/ && cp static/demo.* prod/ && \
     parcel build --public-url ./ prod/index.html
@@ -15,9 +13,9 @@ preGccBuildSteps () {
 
 preGccBuildSteps || { echo 'preGccBuildSteps failed' ; exit 1; }
 
+
 PROD_INDEX_JS=$(cd dist && ls prod.*.js && cd ..)
 PROD_INDEX_JS_TMP="${PROD_INDEX_JS}.tmp"
 "$GCC" --js "dist/${PROD_INDEX_JS}" --js_output_file "dist/${PROD_INDEX_JS_TMP}" && \
-  mv "dist/$PROD_INDEX_JS" "dist/index.js" && \
   mv "dist/$PROD_INDEX_JS_TMP" "dist/$PROD_INDEX_JS"
 

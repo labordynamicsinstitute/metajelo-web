@@ -22,12 +22,6 @@
     "purescript-url-validator": "^1.1.0",
     "purescript-profunctor": "^4.0.0"
   },
-  "devDependencies": {
-    "purescript-debug": "^4.0.0",
-    "purescript-foreign": "^5.0.0",
-    "purescript-psci-support": "^4.0.0",
-    "purescript-test-unit": "^15.0.0"
-  },
   "resolutions": {
     "purescript-typelevel-prelude": "^4.0.0"
   }

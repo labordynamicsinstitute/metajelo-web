@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-pulp build --main "Test.Main" --src-path "src" -I "test" \
-     -- --censor-lib && \
-parcel build --public-url ./ -d testdist test/index.html
