@@ -1,6 +1,6 @@
 module Metajelo where
 
-import Prelude                              (Unit, bind, pure, ($), (<>))
+import Prelude                              (Unit, bind, pure, unit, ($), (<>))
 
 import Concur.React.Run                     (runWidgetInDom)
 import Concur.React.DOM                     (div, span, text)
@@ -27,3 +27,6 @@ renderRecord elemId xmlStr = EX.catchException displayError do
       div  [className $ mjCssPfx "errorDisplayBox"] $ singleton $
         span [className $ mjCssPfx "errorDisplay"]
           [text $ (EX.name er) <> ": " <> (EX.message er)]
+
+main :: Effect Unit
+main = pure unit

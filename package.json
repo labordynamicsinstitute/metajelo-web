@@ -4,13 +4,12 @@
   "main": "static/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "testbrowser": "./scripts/testbrowser",
-    "clean": "rimraf output && rimraf .pulp-cache && rm -fr dist",
-    "build": "bower install && pulp build -- --censor-lib --strict",
-    "ps": "bower install && pulp build",
-    "prod": "npm run ps && parcel build --public-url ./ static/index.html",
-    "start": "parcel --no-hmr --public-url ./ static/index.html",
-    "watch": "parcel watch static/index.html"
+    "testbrowser": "../scripts/testbrowser",
+    "clean": "rimraf output .cache .psci_modules .pulp-cache .spago dist prod testdist",
+    "build": "spago build",
+    "prod": "../scripts/prod",
+    "start": "spago build && parcel --no-hmr --public-url ./ static/index.html",
+    "watch": "spago build && parcel watch static/index.html"
   },
   "author": "Brandon Barker <brandon.barker@cornell.edu> (https://github.com/bbarker)",
   "license": "MPL2",
@@ -18,6 +17,8 @@
     "autoprefixer": "^9.5.1",
     "bower": "^1.8.6",
     "cssmin": "^0.4.3",
+    "cssnano": "^4.1.10",
+    "google-closure-compiler": "^20190415.0.0",
     "parcel-bundler": "^1.12.3",
     "postcss-font-base64": "^1.0.5",
     "postcss-modules": "^1.4.1",

@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 
-pulp build --main "Test.Main" --src-path "src" -I "test" \
-     -- --censor-lib && \
-parcel build --public-url ./ -d testdist test/index.html
+spago build && spago bundle --main "Test.Main" --to index.js && \
+parcel build --public-url ./  index.html
