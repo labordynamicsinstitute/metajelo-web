@@ -13,7 +13,8 @@ generated-docs/
 .psa*
 .spago/
 
-
+app/prod/
+!app/prod/css
 
 # Temp files:
 *~
