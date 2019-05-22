@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-spago build && spago bundle --main "Test.Main" --to index.js && \
+spago build && spago bundle-app --main "Test.Main" --to index.js && \
 parcel build --public-url ./  index.html
