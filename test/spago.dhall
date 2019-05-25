@@ -4,8 +4,14 @@ You can edit this file as you like.
 -}
 { name =
     "purescript-metajelo-web-test"
-, dependencies =
-    [ "debug", "foreign", "metajelo-web", "test-unit" ]
+, dependencies = [
+    "debug"
+  , "console"
+  , "foreign"
+  , "metajelo-web"
+  , "psci-support"
+  , "test-unit"
+  ]
 , packages =
     (../packages.dhall) //
     { metajelo-web =

@@ -15,7 +15,6 @@ You can edit this file as you like.
   , "profunctor"
   , "stringutils"
   , "url-validator"
-  , "psci-support"
   ]
 , packages =
     ../packages.dhall
