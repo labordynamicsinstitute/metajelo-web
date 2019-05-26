@@ -7,7 +7,6 @@ You can edit this file as you like.
 , dependencies = [
     "prelude"
   , "concur-react"
-  , "console"
   , "email-validate"
   , "foreign-object"
   , "metajelo"
