@@ -5,7 +5,6 @@ GCC=$(npm bin)/google-closure-compiler
 preGccBuildSteps () {
   rimraf prod dist && mkdir prod && ln -sfn ../../css prod/css && \
     spago build && spago bundle-module --main Metajelo --to prod/index.prod.js && \
-    printf "\nexport default PS;\n" >> prod/index.prod.js && \
     cp static/index.* prod/ && cp static/demo.* prod/
 }
 
