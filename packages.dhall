@@ -109,71 +109,59 @@ let additions =
 -}
 
 let mkPackage =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.5-20190427/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.0-20190623/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
 
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.12.5-20190427/src/packages.dhall sha256:6b17811247e1f825034fa4dacc4b8ec5eddd0e832e0e1579c2ba3b9b2a1c63fe
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.0-20190623/src/packages.dhall sha256:c73ef468c55d3b788d639d0873b2f31f14df28f745b6c918855316637af8d9bb
 
 let overrides = {=}
 
-let additions = { metajelo =
-  mkPackage
-    [ "generics-rep"
-    , "naturals"
-    , "email-validate"
-    , "stringutils"
-    , "url-validator"
-    , "web-dom"
-    , "web-dom-parser"
-    , "web-dom-xpath"
-    ]
-    "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-    "v1.0.0"
-, naturals =
-   mkPackage
-     [ "enums"
-     , "maybe"
-     , "prelude"
-     ]
-     "https://github.com/LiamGoodacre/purescript-naturals.git"
-     "v3.0.0"
-, stringutils =
-   mkPackage
-     [ "strings"
-     , "partial"
-     , "arrays"
-     , "either"
-     , "maybe"
-     , "prelude"
-     , "integers"
-     ]
-     "https://github.com/menelaos/purescript-stringutils.git"
-     "v0.0.8"
-, url-validator =
-   mkPackage
-     [ "nullable"
-     ]
-     "https://github.com/bbarker/purescript-url-validator.git"
-     "v1.1.0"
-, web-dom-parser =
-   mkPackage
-     [ "prelude"
-     , "effect"
-     , "partial"
-     , "web-dom"
-     ]
-     "https://github.com/purescript-web/purescript-web-dom-parser.git"
-     "v5.0.0"
-, web-dom-xpath =
-   mkPackage
-     [ "prelude"
-     , "effect"
-     , "partial"
-     , "web-dom"
-     ]
-     "https://github.com/purescript-web/purescript-web-dom-xpath.git"
-     "v1.2.0"
-
-}
+let additions =
+      { metajelo =
+          mkPackage
+          [ "generics-rep"
+          , "naturals"
+          , "email-validate"
+          , "stringutils"
+          , "url-validator"
+          , "web-dom"
+          , "web-dom-parser"
+          , "web-dom-xpath"
+          ]
+          "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
+          "v1.0.1"
+      , naturals =
+          mkPackage
+          [ "enums", "maybe", "prelude" ]
+          "https://github.com/LiamGoodacre/purescript-naturals.git"
+          "v3.0.0"
+      , stringutils =
+          mkPackage
+          [ "strings"
+          , "partial"
+          , "arrays"
+          , "either"
+          , "maybe"
+          , "prelude"
+          , "integers"
+          ]
+          "https://github.com/menelaos/purescript-stringutils.git"
+          "v0.0.8"
+      , url-validator =
+          mkPackage
+          [ "nullable" ]
+          "https://github.com/bbarker/purescript-url-validator.git"
+          "v1.1.0"
+      , web-dom-parser =
+          mkPackage
+          [ "prelude", "effect", "partial", "web-dom" ]
+          "https://github.com/purescript-web/purescript-web-dom-parser.git"
+          "v5.0.0"
+      , web-dom-xpath =
+          mkPackage
+          [ "prelude", "effect", "partial", "web-dom" ]
+          "https://github.com/purescript-web/purescript-web-dom-xpath.git"
+          "v1.2.0"
+      }
 
 in  upstream // overrides // additions
