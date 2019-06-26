@@ -17,6 +17,7 @@ app/prod/
 !app/prod/css
 
 test/index.js
+test/prod/
 
 # Temp files:
 *~

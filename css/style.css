@@ -64,19 +64,19 @@ html {
 }
 
 .metajelo_errorDisplay {
+  padding: 10px;
   font-weight: 650;
   color: #ffffff;
+}
+
+.metajelo_errorDisplayBox {
+  padding: 15px;
   background-color: #f44336;
-  padding: 10px;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   -o-border-radius: 20px;
   -ms-border-radius: 20px;
   border-radius: 20px;
-}
-
-.metajelo_errorDisplayBox {
-  padding: 15px;
 }
 
 /* -----------------------------------------------------------------------------

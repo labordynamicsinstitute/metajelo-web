@@ -7,13 +7,9 @@ import Effect.Aff                        (Aff)
 import Effect.Class                      (liftEffect)
 import Effect.Console                    (logShow)
 import Test.Data                         as TD
-import Test.Unit.Assert                  as Assert
-import Text.Email.Validate               as EA
-import URL.Validator                     as URL
+--import Test.Unit.Assert                  as Assert
 
 import Metajelo                          (renderRecord)
-import Metajelo.Types                    as MJ
-import Metajelo.XPaths                   as MXP
 
 main :: Effect Unit
 main = do
