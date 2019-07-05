@@ -12,7 +12,6 @@ You can edit this file as you like.
     , "email-validate"
     , "foreign-object"
     , "metajelo"
-    , "naturals"
     , "profunctor"
     , "stringutils"
     , "url-validator"

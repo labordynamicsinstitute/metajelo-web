@@ -6,23 +6,19 @@
     "bower_components",
     "output"
   ],
-  "license": "MPL2",
+  "license": "BSD-3-Clause-Attribution",
   "repository": {
     "type": "git",
     "url": "git://github.com/labordynamicsinstitute/metajelo-web.git"
   },
   "dependencies": {
+    "purescript-prelude": "^4.1.1",
     "purescript-concur-react": "^0.3.7",
-    "purescript-console": "^4.2.0",
-    "purescript-foreign-object": "^2.0.1",
-    "purescript-metajelo": "^1.0.0",
-    "purescript-naturals": "^3.0.0",
-    "purescript-email-validate": "^4.0.0",
-    "purescript-stringutils": "^0.0.8",
-    "purescript-url-validator": "^1.1.0",
-    "purescript-profunctor": "^4.0.0"
-  },
-  "resolutions": {
-    "purescript-typelevel-prelude": "^4.0.0"
-  }
+    "purescript-email-validate": "^5.0.0",
+    "purescript-foreign-object": "^2.0.2",
+    "purescript-metajelo": "^2.0.0",
+    "purescript-profunctor": "^4.0.0",
+    "purescript-stringutils": "^0.0.9",
+    "purescript-url-validator": "^1.1.0"
+   },
 }
