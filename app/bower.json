@@ -22,6 +22,7 @@
     "purescript-url-validator": "^1.1.0"
   },
   "resolutions": {
-    "purescript-web-dom": "^3.0.0"
+    "purescript-web-dom": "^3.0.0",
+    "purescript-typelevel-prelude": "^4.0.0"
   }
 }
