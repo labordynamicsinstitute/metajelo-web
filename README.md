@@ -47,8 +47,11 @@ instead, e.g. Bootstrap, but PureCSS was lighter weight and fit our needs.
 
 ## Docker
 
-* Run `./psc.sh <command>`, e.g. `./psc.sh pulp --psc-package build`. This will run
-the command in the container with the CWD mounted and then exit. Alternatively
-if you want to issue multiple commands in the container quickly, you can
-run `./psc.sh bash`.
+* Run `./psc.sh <command>`, e.g. `./psc.sh npm run prod`. This will run `npm run
+prod` the command in the container with the CWD mounted and then exit.
+Alternatively if you want to issue multiple commands in the container quickly,
+you can run `./psc.sh bash`.
 
+# API Documentation
+
+API docs are available [on Pursuit](https://pursuit.purescript.org/packages/purescript-metajelo-web).
