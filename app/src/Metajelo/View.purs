@@ -13,7 +13,7 @@ import Concur.React.DOM                     (a, br', cite',
                                              li, li',
                                              span, span', text, ul
                                              )
-import Concur.React.Props                   (Props, classList,
+import Concur.React.Props                   (ReactProps, classList,
                                              href, className)
 import Data.Maybe                           (Maybe(..), isNothing)
 import Data.Array                           (init)
@@ -36,7 +36,7 @@ import Data.Profunctor.Strong ((&&&))
 mjCssPfx :: String -> String
 mjCssPfx cname = "metajelo_" <> cname
 
-cList :: forall a. Array String -> Props a
+cList :: forall a. Array String -> ReactProps a
 cList cs = classList $ map Just cs
 
 mjIcClass :: String
