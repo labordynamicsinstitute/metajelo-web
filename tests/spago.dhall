@@ -18,11 +18,11 @@ You can edit this file as you like.
         ../packages.dhall
     //  { metajelo-web =
             { repo =
-                "../app"
+                "../"
             , version =
                 ""
             , dependencies =
-                (../app/spago.dhall).dependencies
+                (../spago.dhall).dependencies
             }
         }
 }

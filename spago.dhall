@@ -17,5 +17,5 @@ You can edit this file as you like.
     , "url-validator"
     ]
 , packages =
-    ../packages.dhall
+    ./packages.dhall
 }
