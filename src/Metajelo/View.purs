@@ -119,9 +119,9 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
   spacify $ [
     span [className $ mjCssPfx "productCitation"]
       [cite' $ spacify $ citeElems]
-  ] <> locElems
+  ] <> (locElems loc)
   where
-    citeElems = basicMeta <> [span' [instNameElem, text "."], resIdElem]
+    citeElems = basicMeta <> [span' [instNameElem loc, text "."], resIdElem]
     basicMeta = [
       span [className $ mjCssPfx "creator"]
         [text $ prod.basicMetadata.creator]
@@ -139,41 +139,46 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
       Nothing -> mempty
 
     loc = prod.location
-    sust = loc.institutionSustainability
-    instNameElem = span [className $ mjCssPfx "institutionName"]
-      [text $ loc.institutionName]
-    locElems = spacify $ [
-        instNameElem
-      , span' [
-        text "("
-      , span [className $ mjCssPfx "institutionId"]
-          [idToWidg loc.institutionID]
-      , text "; "
-      , span [className $ mjCssPfx "institutionType"]
-          [text $ show loc.institutionType]
-      , text $ addEndPunct ")" (isNothing loc.superOrganizationName) ","
-      ]
-      , case loc.superOrganizationName of
-          Nothing -> mempty
-          Just so -> span' [
-            text "a member of "
-          , span [className $ mjCssPfx "superOrg"]
-              [text $ addEndPunct so false "."]
-          ]
-    , contactWidg loc.institutionContact
+
+instNameElem :: Location -> forall a. Widget HTML a
+instNameElem loc = span [className $ mjCssPfx "institutionName"]
+  [text $ loc.institutionName]
+
+locElems :: Location -> forall a. Array (Widget HTML a)
+locElems loc = spacify $ [
+      instNameElem loc
     , span' [
-        a [className $ mjCssPfx "missionStatement"
-          , href $ urlToString sust.missionStatementURL]
-          [text "Mission Statement"]
-      , text "; "
-      , a [className $ mjCssPfx "fundingStatement"
-          , href $ urlToString sust.fundingStatementURL]
-          [text "Funding Statement"]
-      , text "."
-      ]
-    , ul [className $ mjCssPfx "institutionPolicies"] $
-        map (\ip -> li' [ipolicyWidg ip]) $ NA.toArray loc.institutionPolicies
+      text "("
+    , span [className $ mjCssPfx "institutionId"]
+        [idToWidg loc.institutionID]
+    , text "; "
+    , span [className $ mjCssPfx "institutionType"]
+        [text $ show loc.institutionType]
+    , text $ addEndPunct ")" (isNothing loc.superOrganizationName) ","
     ]
+    , case loc.superOrganizationName of
+        Nothing -> mempty
+        Just so -> span' [
+          text "a member of "
+        , span [className $ mjCssPfx "superOrg"]
+            [text $ addEndPunct so false "."]
+        ]
+  , contactWidg loc.institutionContact
+  , span' [
+      a [className $ mjCssPfx "missionStatement"
+        , href $ urlToString sust.missionStatementURL]
+        [text "Mission Statement"]
+    , text "; "
+    , a [className $ mjCssPfx "fundingStatement"
+        , href $ urlToString sust.fundingStatementURL]
+        [text "Funding Statement"]
+    , text "."
+    ]
+  , ul [className $ mjCssPfx "institutionPolicies"] $
+      map (\ip -> li' [ipolicyWidg ip]) $ NA.toArray loc.institutionPolicies
+  ]
+  where
+    sust = loc.institutionSustainability
 
 contactWidg :: InstitutionContact -> forall a. Widget HTML a
 contactWidg contact = span' $  [
