@@ -109,15 +109,30 @@ let additions =
 -}
 
 let mkPackage =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.0-20190623/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.2-20190725/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
 
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.0-20190623/src/packages.dhall sha256:c73ef468c55d3b788d639d0873b2f31f14df28f745b6c918855316637af8d9bb
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.2-20190725/src/packages.dhall sha256:60cc03d2c3a99a0e5eeebb16a22aac219fa76fe6a1686e8c2bd7a11872527ea3
 
 let overrides = {=}
 
 let additions =
-      { metajelo =
+      { enums =
+          mkPackage
+          [ "control"
+          , "either"
+          , "gen"
+          , "maybe"
+          , "newtype"
+          , "nonempty"
+          , "partial"
+          , "prelude"
+          , "tuples"
+          , "unfoldable"
+          ]
+          "https://github.com/bbarker/purescript-enums.git"
+          "1979eb74baec39b5e62567948f402b4194230e9f"
+      , metajelo =
           mkPackage
           [ "generics-rep"
           , "naturals"
@@ -130,7 +145,7 @@ let additions =
           , "xpath-like"
           ]
           "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-          "v3.1.0"
+          "e8b45cba2b5d445f3533ce24b15454dccfb28904"
       , naturals =
           mkPackage
           [ "enums", "maybe", "prelude" ]
@@ -168,23 +183,6 @@ let additions =
           [ "prelude" ]
           "https://github.com/bbarker/purescript-xpath-like.git"
           "v3.0.0"
-      , concur-react =
-          mkPackage
-        [ "aff"
-          , "arrays"
-          , "avar"
-          , "console"
-          , "foldable-traversable"
-          , "free"
-          , "nonempty"
-          , "react"
-          , "react-dom"
-          , "tailrec"
-          , "web-dom"
-          , "web-html"
-          ]
-          "https://github.com/ajnsit/purescript-concur.git"
-          "v0.3.8"
       }
 
 in  upstream // overrides // additions
