@@ -8,7 +8,7 @@ import Prelude                             (class Functor, class Monoid,
 
 import Concur.Core                          (Widget)
 import Concur.React                         (HTML)
-import Concur.React.DOM                     (a, br', cite',
+import Concur.React.DOM                     ( ElLeafFunc', a, br', cite',
                                              div, div',
                                              li, li',
                                              span, span', text, ul
@@ -20,13 +20,14 @@ import Data.Array                           (init)
 import Data.Foldable                        (class Foldable, any,
                                              foldMap, intercalate)
 import Data.String                          as S
+import Data.String.NonEmpty                 (NonEmptyString, toString)
 import Data.String.Utils                    (endsWith, fromCharArray)
 import Data.Unfoldable                      (fromMaybe)
 import Data.Unfoldable1                     (class Unfoldable1, singleton)
 import Foreign.Object                       as FO
 import Metajelo.Types
 import Text.Email.Validate                  as EA
-import URL.Validator                        (urlToString)
+import Text.URL.Validate                   (urlToString)
 
 -- Temp imports for group -- TODO: remove
 import Data.Array.NonEmpty (NonEmptyArray)
@@ -124,12 +125,12 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
     citeElems = basicMeta <> [span' [instNameElem loc, text "."], resIdElem]
     basicMeta = [
       span [className $ mjCssPfx "creator"]
-        [text $ prod.basicMetadata.creator]
+        [textNE prod.basicMetadata.creator]
     , span [className $ mjCssPfx "pubyear"]
-        [text $ prod.basicMetadata.publicationYear]
+        [textNE prod.basicMetadata.publicationYear]
     , span [className $ mjCssPfx "title"]
         [text $ addEndPunct
-          prod.basicMetadata.title
+          (toString prod.basicMetadata.title)
           (isNothing prod.resourceID)
           ","
         ]
@@ -142,7 +143,7 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
 
 instNameElem :: Location -> forall a. Widget HTML a
 instNameElem loc = span [className $ mjCssPfx "institutionName"]
-  [text $ loc.institutionName]
+  [textNE $ loc.institutionName]
 
 locElems :: Location -> forall a. Array (Widget HTML a)
 locElems loc = spacify $ [
@@ -161,7 +162,7 @@ locElems loc = spacify $ [
         Just so -> span' [
           text "a member of "
         , span [className $ mjCssPfx "superOrg"]
-            [text $ addEndPunct so false "."]
+            [text $ addEndPunct (toString so) false "."]
         ]
   , contactWidg loc.institutionContact
   , span' [
@@ -204,39 +205,39 @@ idToWidg fullId@{id, idType} = span [className $ mjCssPfx "identifier"] [
 , idUrl fullId
 ]
 
-citeId :: String -> forall a. Widget HTML a
-citeId idStr = cite' [text idStr]
+citeId :: NonEmptyString -> forall a. Widget HTML a
+citeId idStr = cite' [textNE idStr]
 
 -- | Returns a URL if one can be constructed from the identifier.
 -- | Otherwise, just returns the identifier as text.
 idUrl :: Identifier -> forall a. Widget HTML a
-idUrl {id, idType: ARK} = a [href id] [citeId id]
+idUrl {id, idType: ARK} = a [hrefNE id] [citeId id]
 idUrl {id, idType: ArXiv} = a [href url] [citeId id]
-  where url = "https://arxiv.org/abs/" <> id
+  where url = "https://arxiv.org/abs/" <> toString id
 idUrl {id, idType: Bibcode} = a [href url] [citeId id]
-  where url = "https://ui.adsabs.harvard.edu/abs/" <> id <> "/abstract"
+  where url = "https://ui.adsabs.harvard.edu/abs/" <> toString id <> "/abstract"
 idUrl {id, idType: DOI} = a [href url] [citeId id]
-  where url = "https://doi.org/" <> id
+  where url = "https://doi.org/" <> toString id
 idUrl {id, idType: EAN13} = citeId id
 idUrl {id, idType: EISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> id
+  where url = "https://www.worldcat.org/ISSN/" <> toString id
 idUrl {id, idType: Handle} = a [href url] [citeId id]
-  where url = "http://hdl.handle.net/" <> id
+  where url = "http://hdl.handle.net/" <> toString id
 idUrl {id, idType: IGSN} = a [href url] [citeId id]
-  where url = "http://igsn.org/" <> id
+  where url = "http://igsn.org/" <> toString id
 idUrl {id, idType: ISBN} = citeId id
 idUrl {id, idType: ISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> id
+  where url = "https://www.worldcat.org/ISSN/" <> toString id
 idUrl {id, idType: ISTC} = citeId id
 idUrl {id, idType: LISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> id
+  where url = "https://www.worldcat.org/ISSN/" <> toString id
 idUrl {id, idType: LSID} = a [href url] [citeId id]
-  where url = "http://www.lsid.info/resolver/?lsid=" <> id
+  where url = "http://www.lsid.info/resolver/?lsid=" <> toString id
 idUrl {id, idType: PMID} = a [href url] [citeId id]
-  where url = "https://www.ncbi.nlm.nih.gov/pubmed/" <> id
-idUrl {id, idType: PURL} = a [href id] [citeId id]
+  where url = "https://www.ncbi.nlm.nih.gov/pubmed/" <> toString id
+idUrl {id, idType: PURL} = a [hrefNE id] [citeId id]
 idUrl {id, idType: UPC} = citeId id
-idUrl {id, idType: URL} = a [href id] [citeId id]
+idUrl {id, idType: URL} = a [hrefNE id] [citeId id]
 idUrl {id, idType: URN} = citeId id
 
 ipolicyWidg :: InstitutionPolicy -> forall a. Widget HTML a
@@ -254,7 +255,7 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
     policyWidg :: Policy -> forall a. Widget HTML a
     policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
       case pol of
-        FreeTextPolicy txt -> text txt
+        FreeTextPolicy txt -> textNE txt
         RefPolicy url -> let urlStr = urlToString url in
           a [href $ urlStr] [text urlStr]
     appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
@@ -270,3 +271,9 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
 group :: forall a f u. Foldable f => Functor f => Unfoldable1 u => Semigroup (u a) =>
   (a -> String) -> f a -> FO.Object (u a)
 group toStr = FO.fromFoldableWith (<>) <<< map (toStr &&& singleton)
+
+hrefNE :: forall a. NonEmptyString -> ReactProps a
+hrefNE = href <<< toString
+
+textNE ::  ElLeafFunc' NonEmptyString
+textNE = text <<< toString
