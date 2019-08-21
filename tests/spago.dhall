@@ -16,13 +16,4 @@ You can edit this file as you like.
     ]
 , packages =
         ../packages.dhall
-    //  { metajelo-web =
-            { repo =
-                "../"
-            , version =
-                ""
-            , dependencies =
-                (../spago.dhall).dependencies
-            }
-        }
 }

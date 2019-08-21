@@ -43,7 +43,12 @@ instead, e.g. Bootstrap, but PureCSS was lighter weight and fit our needs.
 </div>
 ```
 
-# Buidling
+# Building
+
+If you have the relevant build tools intalled (npm, spago, pulp, etc.), you can
+build using `npm run build && npm run prod`. For a more convient approach, see
+the section on Docker below, and for complete build commands used in CI, see
+`scripts/dist_build_commands.sh`.
 
 ## Docker
 
@@ -51,6 +56,7 @@ instead, e.g. Bootstrap, but PureCSS was lighter weight and fit our needs.
 prod` the command in the container with the CWD mounted and then exit.
 Alternatively if you want to issue multiple commands in the container quickly,
 you can run `./psc.sh bash`.
+
 
 # API Documentation
 
