@@ -147,7 +147,7 @@ let additions =
           , "xpath-like"
           ]
           "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-          "2ad778ba4b11e9a85245ff01b001c01173decea8"
+          "aad3888cd87bae7b58058ddca8b7ed71f0d246f2"
       , naturals =
           mkPackage
           [ "enums", "maybe", "prelude" ]
