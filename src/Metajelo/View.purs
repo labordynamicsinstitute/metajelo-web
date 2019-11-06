@@ -177,9 +177,16 @@ locElems loc = spacify $ [
     ]
   , ul [className $ mjCssPfx "institutionPolicies"] $
       map (\ip -> li' [ipolicyWidg ip]) $ NA.toArray loc.institutionPolicies
+  , versioningWidg loc.versioning
   ]
-  where
+    where
     sust = loc.institutionSustainability
+    versioningWidg :: Boolean -> forall a. Widget HTML a
+    versioningWidg versioning = span [className $ mjCssPfx "versioning"] [text vTxt]
+      where
+      vTxt = case versioning of
+        true -> "Versioned"
+        false -> "Unversioned"
 
 contactWidg :: InstitutionContact -> forall a. Widget HTML a
 contactWidg contact = span' $  [
@@ -187,10 +194,10 @@ contactWidg contact = span' $  [
 , a [className $ mjCssPfx "institutionContact", href $ "mailto:" <> ea] [text ea]
 ] <> [contactType]
   where
-    ea = EA.toString contact.emailAddress
-    contactType = text case contact.contactType of
-      Nothing -> "."
-      Just ct -> " (" <> show ct <> ")."
+  ea = EA.toString contact.emailAddress
+  contactType = text case contact.contactType of
+    Nothing -> "."
+    Just ct -> " (" <> show ct <> ")."
 
 relIdToWidg :: RelatedIdentifier -> forall a. Widget HTML a
 relIdToWidg {id, idType, relType} = span [className $ mjCssPfx "relatedId"] [
@@ -247,25 +254,25 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
 , policyWidg ipol.policy
 ]
   where
-    policyTypeWidg :: PolicyType -> forall a. Widget HTML a
-    policyTypeWidg polType = span' [
-      span [className $ mjCssPfx "policyType"] [text $ show polType]
-    , text $ " Policy:"
-    ]
-    policyWidg :: Policy -> forall a. Widget HTML a
-    policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
-      case pol of
-        FreeTextPolicy txt -> textNE txt
-        RefPolicy url -> let urlStr = urlToString url in
-          a [href $ urlStr] [text urlStr]
-    appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
-    appliesWidg appliesMay = span [cList [mjIcClass, sq.cls]] [info sq.text]
-      where
-        sq = case appliesMay of
-          Nothing -> {text: "May apply to product (unverified)", cls: mjIcSq}
-          Just true -> {text: "Applies to product", cls: mjIcCheckSq}
-          Just false ->{text: "Does not apply to product", cls: mjIcMinusSq}
-        info txt = span [className $ mjCssPfx "applies_info"] [text txt]
+  policyTypeWidg :: PolicyType -> forall a. Widget HTML a
+  policyTypeWidg polType = span' [
+    span [className $ mjCssPfx "policyType"] [text $ show polType]
+  , text $ " Policy:"
+  ]
+  policyWidg :: Policy -> forall a. Widget HTML a
+  policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
+    case pol of
+      FreeTextPolicy txt -> textNE txt
+      RefPolicy url -> let urlStr = urlToString url in
+        a [href $ urlStr] [text urlStr]
+  appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
+  appliesWidg appliesMay = span [cList [mjIcClass, sq.cls]] [info sq.text]
+    where
+    sq = case appliesMay of
+      Nothing -> {text: "May apply to product (unverified)", cls: mjIcSq}
+      Just true -> {text: "Applies to product", cls: mjIcCheckSq}
+      Just false ->{text: "Does not apply to product", cls: mjIcMinusSq}
+    info txt = span [className $ mjCssPfx "applies_info"] [text txt]
 
 --TODO: use upstream when merged
 group :: forall a f u. Foldable f => Functor f => Unfoldable1 u => Semigroup (u a) =>
