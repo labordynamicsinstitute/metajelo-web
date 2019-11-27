@@ -25,6 +25,7 @@ import Data.String.Utils                    (endsWith, fromCharArray)
 import Data.Unfoldable                      (fromMaybe)
 import Data.Unfoldable1                     (class Unfoldable1, singleton)
 import Foreign.Object                       as FO
+import Metajelo.CSS.Web.ClassProps          as MC
 import Metajelo.Types
 import Text.Email.Validate                  as EA
 import Text.URL.Validate                   (urlToString)
@@ -34,23 +35,8 @@ import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NA
 import Data.Profunctor.Strong ((&&&))
 
-mjCssPfx :: String -> String
-mjCssPfx cname = "metajelo_" <> cname
-
 cList :: forall a. Array String -> ReactProps a
 cList cs = classList $ map Just cs
-
-mjIcClass :: String
-mjIcClass = mjCssPfx "icon"
-
-mjIcSq :: String
-mjIcSq = mjCssPfx "icon-square-o"
-
-mjIcMinusSq :: String
-mjIcMinusSq = mjCssPfx "icon-minus-square-o"
-
-mjIcCheckSq :: String
-mjIcCheckSq = mjCssPfx "icon-check-square-o"
 
 spc :: forall a. Widget HTML a
 spc = span' [text " "]
@@ -79,19 +65,15 @@ addEndPunct input skip punct =
   where
     pctsToReplace = [";", ".", ","]
 
-
 mkRecordWidget :: MetajeloRecord -> forall a. Widget HTML a
-mkRecordWidget rec = div [className $ mjCssPfx "record"] [
-  span [className $ mjCssPfx "productsHeader"] [
-    text $ "Supplementary materials for "
-    , idToWidg rec.identifier
+mkRecordWidget rec = div [MC.record] [
+  span [MC.productsHeader] [
+    idToWidg rec.identifier
   ]
-  , ul [className $ mjCssPfx "productGroupList"] $ map
-      (\k -> li [className $ mjCssPfx "productGroup"]
-        [div' $ [text(k), br', prodGrpWidg k]])
+  , ul [MC.productList] $ map
+      (\k -> li [MC.productGroup] [div' $ [text(k), br', prodGrpWidg k]])
       (FO.keys prodGroups)
-  , span [className $ mjCssPfx "relatedIdentifiersHeader"]
-      [text $ "Related Identifiers"]
+  , span [MC.relatedIdsHeader] []
   , relIdInfo
   ]
   where
@@ -109,26 +91,26 @@ mkRecordWidget rec = div [className $ mjCssPfx "record"] [
         grpWidgs :: Array SupplementaryProduct
         grpWidgs = FO.lookup key prodGroups # map NA.toArray
           # fromMaybe # join
-    relIdInfo = ul [className $ mjCssPfx "relatedIdList"] $
+    relIdInfo = ul [MC.relatedIdList] $
       NA.toArray relIdItems
       where
         relIdItems = map relIdToWidg rec.relatedIdentifiers
-          # map (\i -> li [className $ mjCssPfx "relatedIdItem"] [i] )
+          # map (\i -> li [MC.relatedId] [i] )
 
 mkSupplementaryProductWidget :: SupplementaryProduct -> forall a. Widget HTML a
-mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
+mkSupplementaryProductWidget prod = div [MC.product] $
   spacify $ [
-    span [className $ mjCssPfx "productCitation"]
+    span [MC.productCitation]
       [cite' $ spacify $ citeElems]
   ] <> (locElems loc)
   where
     citeElems = basicMeta <> [span' [instNameElem loc, text "."], resIdElem]
     basicMeta = [
-      span [className $ mjCssPfx "creator"]
+      span [MC.basicMetadata, MC.creator]
         [textNE prod.basicMetadata.creator]
-    , span [className $ mjCssPfx "pubyear"]
+    , span [MC.basicMetadata, MC.pubyear]
         [textNE prod.basicMetadata.publicationYear]
-    , span [className $ mjCssPfx "title"]
+    , span [MC.basicMetadata, MC.title]
         [text $ addEndPunct
           (toString prod.basicMetadata.title)
           (isNothing prod.resourceID)
@@ -142,7 +124,7 @@ mkSupplementaryProductWidget prod = div [className $ mjCssPfx "product"] $
     loc = prod.location
 
 instNameElem :: Location -> forall a. Widget HTML a
-instNameElem loc = span [className $ mjCssPfx "institutionName"]
+instNameElem loc = span [MC.institutionName]
   [textNE $ loc.institutionName]
 
 locElems :: Location -> forall a. Array (Widget HTML a)
@@ -150,10 +132,10 @@ locElems loc = spacify $ [
       instNameElem loc
     , span' [
       text "("
-    , span [className $ mjCssPfx "institutionId"]
+    , span [MC.institutionId]
         [idToWidg loc.institutionID]
     , text "; "
-    , span [className $ mjCssPfx "institutionType"]
+    , span [MC.institutionType]
         [text $ show loc.institutionType]
     , text $ addEndPunct ")" (isNothing loc.superOrganizationName) ","
     ]
@@ -161,28 +143,28 @@ locElems loc = spacify $ [
         Nothing -> mempty
         Just so -> span' [
           text "a member of "
-        , span [className $ mjCssPfx "superOrg"]
+        , span [MC.superOrg]
             [text $ addEndPunct (toString so) false "."]
         ]
   , contactWidg loc.institutionContact
   , span' [
-      a [className $ mjCssPfx "missionStatement"
+      a [MC.missionStatement
         , href $ urlToString sust.missionStatementURL]
         [text "Mission Statement"]
     , text "; "
-    , a [className $ mjCssPfx "fundingStatement"
+    , a [MC.fundingStatement
         , href $ urlToString sust.fundingStatementURL]
         [text "Funding Statement"]
     , text "."
     ]
-  , ul [className $ mjCssPfx "institutionPolicies"] $
+  , ul [MC.institutionPolicies] $
       map (\ip -> li' [ipolicyWidg ip]) $ NA.toArray loc.institutionPolicies
   , versioningWidg loc.versioning
   ]
     where
     sust = loc.institutionSustainability
     versioningWidg :: Boolean -> forall a. Widget HTML a
-    versioningWidg versioning = span [className $ mjCssPfx "versioning"] [text vTxt]
+    versioningWidg versioning = span [MC.versioning] [text vTxt]
       where
       vTxt = case versioning of
         true -> "Versioned"
@@ -191,7 +173,7 @@ locElems loc = spacify $ [
 contactWidg :: InstitutionContact -> forall a. Widget HTML a
 contactWidg contact = span' $  [
   text "Institution Contact: "
-, a [className $ mjCssPfx "institutionContact", href $ "mailto:" <> ea] [text ea]
+, a [MC.institutionContact, href $ "mailto:" <> ea] [text ea]
 ] <> [contactType]
   where
   ea = EA.toString contact.emailAddress
@@ -200,14 +182,14 @@ contactWidg contact = span' $  [
     Just ct -> " (" <> show ct <> ")."
 
 relIdToWidg :: RelatedIdentifier -> forall a. Widget HTML a
-relIdToWidg {id, idType, relType} = span [className $ mjCssPfx "relatedId"] [
+relIdToWidg {id, idType, relType} = span [MC.relatedId] [
   text $ (show relType)
   , spc
   , idToWidg {id, idType}
 ]
 
 idToWidg :: Identifier -> forall a. Widget HTML a
-idToWidg fullId@{id, idType} = span [className $ mjCssPfx "identifier"] [
+idToWidg fullId@{id, idType} = span [MC.identifier] [
   text $ (show idType) <> ": "
 , idUrl fullId
 ]
@@ -248,7 +230,7 @@ idUrl {id, idType: URL} = a [hrefNE id] [citeId id]
 idUrl {id, idType: URN} = citeId id
 
 ipolicyWidg :: InstitutionPolicy -> forall a. Widget HTML a
-ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
+ipolicyWidg ipol = div [MC.institutionPolicy] $ spacify $ [
   appliesWidg ipol.appliesToProduct
 , foldMap policyTypeWidg ipol.policyType
 , policyWidg ipol.policy
@@ -256,23 +238,23 @@ ipolicyWidg ipol = div [className $ mjCssPfx "institutionPolicy"] $ spacify $ [
   where
   policyTypeWidg :: PolicyType -> forall a. Widget HTML a
   policyTypeWidg polType = span' [
-    span [className $ mjCssPfx "policyType"] [text $ show polType]
+    span [MC.policyType] [text $ show polType]
   , text $ " Policy:"
   ]
   policyWidg :: Policy -> forall a. Widget HTML a
-  policyWidg pol = span [className $ mjCssPfx "policy"] $ singleton
+  policyWidg pol = span [MC.policy] $ singleton
     case pol of
       FreeTextPolicy txt -> textNE txt
       RefPolicy url -> let urlStr = urlToString url in
         a [href $ urlStr] [text urlStr]
   appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
-  appliesWidg appliesMay = span [cList [mjIcClass, sq.cls]] [info sq.text]
+  appliesWidg appliesMay = span [cList [MC.applies, sq.cls]] [info sq.text]
     where
     sq = case appliesMay of
-      Nothing -> {text: "May apply to product (unverified)", cls: mjIcSq}
-      Just true -> {text: "Applies to product", cls: mjIcCheckSq}
-      Just false ->{text: "Does not apply to product", cls: mjIcMinusSq}
-    info txt = span [className $ mjCssPfx "applies_info"] [text txt]
+      Nothing -> {text: "May apply to product (unverified)", cls: MC.appliesMaybe}
+      Just true -> {text: "Applies to product", cls: MC.appliesYes}
+      Just false ->{text: "Does not apply to product", cls: MC.appliesNo}
+    info txt = span [MC.applies_info] [text txt]
 
 --TODO: use upstream when merged
 group :: forall a f u. Foldable f => Functor f => Unfoldable1 u => Semigroup (u a) =>

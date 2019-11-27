@@ -44,6 +44,9 @@ html {
   line-height: 1.2;
   font-weight: 700;
 }
+.metajelo_productsHeader:after {
+  content: "Supplementary materials for ";
+}
 
 .metajelo_relatedIdentifiersHeader {
   font-size: 18px;
@@ -132,7 +135,7 @@ html {
   font-style: normal;
 }
 
-.metajelo_icon {
+.metajelo_applies {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
   speak: none;
@@ -147,19 +150,19 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.metajelo_icon-lock:before {
+.metajelo_applies-lock:before {
   content: "\f023";
 }
-.metajelo_icon-check-square-o:before {
+.metajelo_applies-yes:before {
   content: "\f046";
 }
-.metajelo_icon-square-o:before {
+.metajelo_applies-maybe:before {
   content: "\f096";
 }
 .metajelo_icon-unlock:before {
   content: "\f09c";
 }
-.metajelo_icon-minus-square-o:before {
+.metajelo_applies-no:before {
   content: "\f147";
 }
 

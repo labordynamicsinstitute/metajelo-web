@@ -148,6 +148,11 @@ let additions =
           ]
           "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
           "aad3888cd87bae7b58058ddca8b7ed71f0d246f2"
+      , metajelo-ui-css-classes =
+          mkPackage
+          [ "prelude", "concur-core", "concur-react" ]
+          "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
+          "v0.0.2"
       , naturals =
           mkPackage
           [ "enums", "maybe", "prelude" ]
