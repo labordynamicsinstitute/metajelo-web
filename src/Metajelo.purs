@@ -9,6 +9,7 @@ import Data.Unfoldable1                     (singleton)
 import Effect                               (Effect)
 import Effect.Exception                     as EX
 import Effect.Exception                     (Error)
+import Metajelo.CSS.Web.ClassProps          as MC
 import Metajelo.View                        (mkRecordWidget)
 import Metajelo.XPaths                      as MX
 import Metajelo.XPaths.Read                 as MXR
@@ -25,7 +26,7 @@ renderRecord elemId xmlStr = EX.catchException displayError do
   where
     displayError :: Error -> Effect Unit
     displayError er = runWidgetInDom elemId $
-      div  [MC.errorDisplayBox] $ singleton $
+      div [MC.errorDisplayBox] $ singleton $
         span [MC.errorDisplay]
           [text $ (EX.name er) <> ": " <> (EX.message er)]
 

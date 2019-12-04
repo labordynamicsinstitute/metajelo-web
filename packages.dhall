@@ -112,84 +112,82 @@ let mkPackage =
       https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.2-20190725/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.3-20190818/packages.dhall sha256:c95c4a8b8033a48a350106b759179f68a695c7ea2208228c522866fd43814dc8
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.5-20191127/packages.dhall sha256:654e8427ff1f9830542f491623cd5d89b1648774a765520554f98f41d3d1b3b3
 
-
--- For making available to tests:
 let overrides = { metajelo-web = ./spago.dhall as Location }
 
 let additions =
       { enums =
           mkPackage
-          [ "control"
-          , "either"
-          , "gen"
-          , "maybe"
-          , "newtype"
-          , "nonempty"
-          , "partial"
-          , "prelude"
-          , "tuples"
-          , "unfoldable"
-          ]
-          "https://github.com/bbarker/purescript-enums.git"
-          "1979eb74baec39b5e62567948f402b4194230e9f"
+            [ "control"
+            , "either"
+            , "gen"
+            , "maybe"
+            , "newtype"
+            , "nonempty"
+            , "partial"
+            , "prelude"
+            , "tuples"
+            , "unfoldable"
+            ]
+            "https://github.com/bbarker/purescript-enums.git"
+            "1979eb74baec39b5e62567948f402b4194230e9f"
       , metajelo =
           mkPackage
-          [ "generics-rep"
-          , "naturals"
-          , "email-validate"
-          , "stringutils"
-          , "url-validator"
-          , "web-dom"
-          , "web-dom-parser"
-          , "web-dom-xpath"
-          , "xpath-like"
-          ]
-          "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-          "aad3888cd87bae7b58058ddca8b7ed71f0d246f2"
+            [ "generics-rep"
+            , "naturals"
+            , "email-validate"
+            , "stringutils"
+            , "url-validator"
+            , "web-dom"
+            , "web-dom-parser"
+            , "web-dom-xpath"
+            , "xpath-like"
+            ]
+            "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
+            "aad3888cd87bae7b58058ddca8b7ed71f0d246f2"
       , metajelo-ui-css-classes =
           mkPackage
-          [ "prelude", "concur-core", "concur-react" ]
-          "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
-          "v0.0.2"
+            [ "prelude", "concur-core", "concur-react" ]
+            "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
+            "478b458574b46619861895b85dc7dd6b0058b6e6"
       , naturals =
           mkPackage
-          [ "enums", "maybe", "prelude" ]
-          "https://github.com/LiamGoodacre/purescript-naturals.git"
-          "v3.0.0"
+            [ "enums", "maybe", "prelude" ]
+            "https://github.com/LiamGoodacre/purescript-naturals.git"
+            "v3.0.0"
       , stringutils =
           mkPackage
-          [ "strings"
-          , "partial"
-          , "arrays"
-          , "either"
-          , "maybe"
-          , "prelude"
-          , "integers"
-          ]
-          "https://github.com/menelaos/purescript-stringutils.git"
-          "v0.0.8"
+            [ "strings"
+            , "partial"
+            , "arrays"
+            , "either"
+            , "maybe"
+            , "prelude"
+            , "integers"
+            ]
+            "https://github.com/menelaos/purescript-stringutils.git"
+            "v0.0.8"
       , url-validator =
           mkPackage
-          [ "nullable" ]
-          "https://github.com/bbarker/purescript-url-validator.git"
-          "v2.1.0"
+            [ "nullable" ]
+            "https://github.com/bbarker/purescript-url-validator.git"
+            "v2.1.0"
       , web-dom-parser =
           mkPackage
-          [ "prelude", "effect", "partial", "web-dom" ]
-          "https://github.com/purescript-web/purescript-web-dom-parser.git"
-          "v6.0.0"
+            [ "prelude", "effect", "partial", "web-dom" ]
+            "https://github.com/purescript-web/purescript-web-dom-parser.git"
+            "v6.0.0"
       , web-dom-xpath =
           mkPackage
-          [ "prelude", "effect", "partial", "web-dom" ]
-          "https://github.com/purescript-web/purescript-web-dom-xpath.git"
-          "v1.2.1"
+            [ "prelude", "effect", "partial", "web-dom" ]
+            "https://github.com/purescript-web/purescript-web-dom-xpath.git"
+            "v1.2.1"
       , xpath-like =
           mkPackage
-          [ "prelude" ]
-          "https://github.com/bbarker/purescript-xpath-like.git"
-          "v3.0.0"
+            [ "prelude" ]
+            "https://github.com/bbarker/purescript-xpath-like.git"
+            "v3.0.0"
       }
 
 in  upstream // overrides // additions
