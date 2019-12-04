@@ -12,6 +12,7 @@ generated-docs/
 .purs*
 .psa*
 .spago/
+.css/
 
 prod/
 !prod/css
