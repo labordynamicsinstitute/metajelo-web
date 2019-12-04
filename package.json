@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "testbrowser": "../scripts/testbrowser",
-    "clean": "rimraf output .cache .psci_modules .pulp-cache .spago dist prod testdist",
+    "clean": "rimraf output .cache .psci_modules .pulp-cache .spago dist prod testdist metajelo-ui-css-classes",
     "build": "spago build",
     "prod": "./scripts/prod",
     "getcss": "./scripts/getcss",
