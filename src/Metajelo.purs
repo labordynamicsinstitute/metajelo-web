@@ -4,7 +4,6 @@ import Prelude                              (Unit, bind, pure, unit, ($), (<>))
 
 import Concur.React.Run                     (runWidgetInDom)
 import Concur.React.DOM                     (div, span, text)
-import Concur.React.Props                   (className)
 import Data.Unfoldable1                     (singleton)
 import Effect                               (Effect)
 import Effect.Exception                     as EX

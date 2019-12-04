@@ -13,8 +13,7 @@ import Concur.React.DOM                     ( ElLeafFunc', a, br', cite',
                                              li, li',
                                              span, span', text, ul
                                              )
-import Concur.React.Props                   (ReactProps, classList,
-                                             href, className)
+import Concur.React.Props                   (ReactProps, classList, href)
 import Data.Maybe                           (Maybe(..), isNothing)
 import Data.Array                           (init)
 import Data.Foldable                        (class Foldable, any,
@@ -25,7 +24,9 @@ import Data.String.Utils                    (endsWith, fromCharArray)
 import Data.Unfoldable                      (fromMaybe)
 import Data.Unfoldable1                     (class Unfoldable1, singleton)
 import Foreign.Object                       as FO
+import Metajelo.CSS.Web.ClassNames          as MCN
 import Metajelo.CSS.Web.ClassProps          as MC
+import Metajelo.CSS.Web.Util                (prependWebPfx)
 import Metajelo.Types
 import Text.Email.Validate                  as EA
 import Text.URL.Validate                   (urlToString)
@@ -248,12 +249,15 @@ ipolicyWidg ipol = div [MC.institutionPolicy] $ spacify $ [
       RefPolicy url -> let urlStr = urlToString url in
         a [href $ urlStr] [text urlStr]
   appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
-  appliesWidg appliesMay = span [MC.applies, sq.cls] [info sq.text]
+  appliesWidg appliesMay = span [cList [prependWebPfx MCN.applies, sq.cls]] [info sq.text]
     where
     sq = case appliesMay of
-      Nothing -> {text: "May apply to product (unverified)", cls: MC.appliesMaybe}
-      Just true -> {text: "Applies to product", cls: MC.appliesYes}
-      Just false ->{text: "Does not apply to product", cls: MC.appliesNo}
+      Nothing -> {text: "May apply to product (unverified)",
+        cls: prependWebPfx MCN.appliesMaybe}
+      Just true -> {text: "Applies to product",
+        cls: prependWebPfx MCN.appliesYes}
+      Just false ->{text: "Does not apply to product",
+        cls: prependWebPfx MCN.appliesNo}
     info txt = span [MC.appliesInfo] [text txt]
 
 --TODO: use upstream when merged
