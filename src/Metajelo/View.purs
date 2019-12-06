@@ -11,9 +11,9 @@ import Concur.React                         (HTML)
 import Concur.React.DOM                     ( ElLeafFunc', a, br', cite',
                                              div, div',
                                              li, li',
-                                             span, span', text, ul
+                                             span, span', span_, text, ul
                                              )
-import Concur.React.Props                   (ReactProps, classList, href)
+import Concur.React.Props                   (ReactProps, href)
 import Data.Maybe                           (Maybe(..), isNothing)
 import Data.Array                           (init)
 import Data.Foldable                        (class Foldable, any,
@@ -26,7 +26,7 @@ import Data.Unfoldable1                     (class Unfoldable1, singleton)
 import Foreign.Object                       as FO
 import Metajelo.CSS.Web.ClassNames          as MCN
 import Metajelo.CSS.Web.ClassProps          as MC
-import Metajelo.CSS.Web.Util                (prependWebPfx)
+import Metajelo.CSS.Web.Util                (cList)
 import Metajelo.Types
 import Text.Email.Validate                  as EA
 import Text.URL.Validate                   (urlToString)
@@ -35,9 +35,6 @@ import Text.URL.Validate                   (urlToString)
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Array.NonEmpty as NA
 import Data.Profunctor.Strong ((&&&))
-
-cList :: forall a. Array String -> ReactProps a
-cList cs = classList $ map Just cs
 
 spc :: forall a. Widget HTML a
 spc = span' [text " "]
@@ -69,7 +66,7 @@ addEndPunct input skip punct =
 mkRecordWidget :: MetajeloRecord -> forall a. Widget HTML a
 mkRecordWidget rec = div [MC.record] [
   span [MC.productsHeader] [
-    idToWidg rec.identifier
+    span_ [MC.recordId] $ idToWidg rec.identifier
   ]
   , ul [MC.productList] $ map
       (\k -> li [MC.productGroup] [div' $ [text(k), br', prodGrpWidg k]])
@@ -119,7 +116,7 @@ mkSupplementaryProductWidget prod = div [MC.product] $
         ]
     ]
     resIdElem = case prod.resourceID of
-      Just resID -> span' [idToWidg resID, (text ".")]
+      Just resID -> span [MC.resourceId] [idToWidg resID, (text ".")]
       Nothing -> mempty
 
     loc = prod.location
@@ -249,15 +246,12 @@ ipolicyWidg ipol = div [MC.institutionPolicy] $ spacify $ [
       RefPolicy url -> let urlStr = urlToString url in
         a [href $ urlStr] [text urlStr]
   appliesWidg :: Maybe Boolean -> forall a. Widget HTML a
-  appliesWidg appliesMay = span [cList [prependWebPfx MCN.applies, sq.cls]] [info sq.text]
+  appliesWidg appliesMay = span [cList [MCN.applies, sq.cls]] [info sq.text]
     where
     sq = case appliesMay of
-      Nothing -> {text: "May apply to product (unverified)",
-        cls: prependWebPfx MCN.appliesMaybe}
-      Just true -> {text: "Applies to product",
-        cls: prependWebPfx MCN.appliesYes}
-      Just false ->{text: "Does not apply to product",
-        cls: prependWebPfx MCN.appliesNo}
+      Nothing -> {text: "May apply to product (unverified)", cls: MCN.appliesMaybe}
+      Just true -> {text: "Applies to product", cls: MCN.appliesYes}
+      Just false ->{text: "Does not apply to product", cls: MCN.appliesNo}
     info txt = span [MC.appliesInfo] [text txt]
 
 --TODO: use upstream when merged
