@@ -145,7 +145,7 @@ locElems loc = spacify $ [
             [text $ addEndPunct (toString so) false "."]
         ]
   , contactWidg loc.institutionContact
-  , span' [
+  , span [MC.sustainability] [
       a [MC.missionStatement
         , href $ urlToString sust.missionStatementURL]
         [text "Mission Statement"]
@@ -181,15 +181,15 @@ contactWidg contact = span' $  [
 
 relIdToWidg :: RelatedIdentifier -> forall a. Widget HTML a
 relIdToWidg {id, idType, relType} = span [MC.relatedId] [
-  text $ (show relType)
+    span_ [MC.relType] $ text $ (show relType)
   , spc
   , idToWidg {id, idType}
 ]
 
 idToWidg :: Identifier -> forall a. Widget HTML a
 idToWidg fullId@{id, idType} = span [MC.identifier] [
-  text $ (show idType) <> ": "
-, idUrl fullId
+  span_ [MC.idType] $ text $ (show idType)
+, span_ [MC.idUrl] $ idUrl fullId
 ]
 
 citeId :: NonEmptyString -> forall a. Widget HTML a
