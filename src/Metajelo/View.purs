@@ -3,21 +3,22 @@ module Metajelo.View where
 import Prelude                             (class Functor, class Monoid,
                                             class Semigroup,
                                             identity, join, map, mempty, show,
-                                            (#), ($), (<<<), (<>))
+                                            (#), (<#>), ($), (<<<), (<>))
 
 
 import Concur.Core                          (Widget)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     ( ElLeafFunc', a, br', cite',
                                              div, div',
-                                             li, li',
+                                             li, li', li_,
                                              span, span', span_, text, ul
                                              )
 import Concur.React.Props                   (ReactProps, href)
+import Control.Alt                          ((<|>))
 import Data.Maybe                           (Maybe(..), isNothing)
-import Data.Array                           (init)
+import Data.Array                           ((:), head, init)
 import Data.Foldable                        (class Foldable, any,
-                                             foldMap, intercalate)
+                                             fold, foldMap, intercalate)
 import Data.String                          as S
 import Data.String.NonEmpty                 (NonEmptyString, toString)
 import Data.String.Utils                    (endsWith, fromCharArray)
@@ -69,7 +70,7 @@ mkRecordWidget rec = div [MC.record] [
     span_ [MC.recordId] $ idToWidg rec.identifier
   ]
   , ul [MC.productList] $ map
-      (\k -> li [MC.productGroup] [div' $ [text(k), br', prodGrpWidg k]])
+      (\k -> li_ [MC.productGroup] $ prodGrpWidg k)
       (FO.keys prodGroups)
   , span [MC.relatedIdsHeader] []
   , relIdInfo
@@ -84,11 +85,17 @@ mkRecordWidget rec = div [MC.record] [
     printResTyp prod = show prod.resourceType.generalType <> ": " <>
       prod.resourceType.description
     prodGrpWidg :: String -> forall a. Widget HTML a
-    prodGrpWidg key = div' $ map mkSupplementaryProductWidget grpWidgs
+    prodGrpWidg key = div' $ grpHeader : map mkSupplementaryProductWidget prodGrp
       where
-        grpWidgs :: Array SupplementaryProduct
-        grpWidgs = FO.lookup key prodGroups # map NA.toArray
+        prodGrp :: Array SupplementaryProduct
+        prodGrp = FO.lookup key prodGroups # map NA.toArray
           # fromMaybe # join
+        grpHeader :: forall a. Widget HTML a
+        grpHeader = span_ [MC.resourceType] $ (head prodGrp) <#> (\prod ->
+              (span_ [MC.resourceTypeGen] $ text $ show prod.resourceType.generalType)
+          <|> (span_ [MC.resourceTypeDescr] $ text prod.resourceType.description)
+          <|> br'
+          ) # fold
     relIdInfo = ul [MC.relatedIdList] $
       NA.toArray relIdItems
       where
