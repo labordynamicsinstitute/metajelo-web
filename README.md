@@ -22,7 +22,7 @@ repository for how this is done.
 
 ### Default or Custom CSS Styles.
 
-The file `css/style.css` contains some default styles used in our examples.
+By default, CSS files are retrieved from a [separate repository](https://github.com/labordynamicsinstitute/metajelo-ui-css-classes) using `scripts/getcss`; the file `css/style.css` contains some default styles used in our examples.
 Feel free to include it, or modify it (renaming the file is also possible):
 
 ```html
