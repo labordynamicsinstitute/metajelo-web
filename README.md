@@ -20,7 +20,7 @@ and "Add the Viewport Meta Element" for how to install it under [Get
 Started](https://purecss.io/start/), or check the `test/index.html`file in this
 repository for how this is done.
 
-### Default or Custom CSS Styles.
+### Default or Custom CSS Styles
 
 By default, CSS files are retrieved from a [separate repository](https://github.com/labordynamicsinstitute/metajelo-ui-css-classes) using `scripts/getcss`; the file `css/style.css` contains some default styles used in our examples.
 Feel free to include it, or modify it (renaming the file is also possible):
@@ -28,6 +28,17 @@ Feel free to include it, or modify it (renaming the file is also possible):
 ```html
 <link rel="stylesheet" href="css/style.css">
 ```
+
+Rather than [buidling](#Building) metajelo-web to get the JavaScript code, you can retrieve the latest build that is
+[running on github-pages](https://labordynamicsinstitute.github.io/metajelo-web):
+
+```
+wget -r -np -k https://labordynamicsinstitute.github.io/metajelo-web/
+```
+
+You can then modify the retrieved `index.html` to use the custom CSS;
+it will by default be using a minified CSS file which might have a name
+like `prod.80f5279b.css`.
 
 ### Creating the application element
 
