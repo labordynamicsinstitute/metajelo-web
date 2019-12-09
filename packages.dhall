@@ -150,7 +150,7 @@ let additions =
           mkPackage
             [ "prelude", "concur-core", "concur-react" ]
             "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
-            "24c249fbbe16093669f8aba854d276ffe06b197b"
+            "v0.1.0"
       , naturals =
           mkPackage
             [ "enums", "maybe", "prelude" ]

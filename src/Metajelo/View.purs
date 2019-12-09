@@ -176,15 +176,15 @@ locElems loc = spacify $ [
         false -> "Unversioned"
 
 contactWidg :: InstitutionContact -> forall a. Widget HTML a
-contactWidg contact = span' $  [
-  text "Institution Contact: "
-, a [MC.institutionContact, href $ "mailto:" <> ea] [text ea]
-] <> [contactType]
+contactWidg contact = span_ [MC.institutionContact] $
+      (span' $ [text "Institution Contact: "])
+  <|> (a [MC.contactEmail, href $ "mailto:" <> ea] [text ea])
+  <|> (span_ [MC.contactType] contactType)
   where
-  ea = EA.toString contact.emailAddress
-  contactType = text case contact.contactType of
-    Nothing -> "."
-    Just ct -> " (" <> show ct <> ")."
+    ea = EA.toString contact.emailAddress
+    contactType = text case contact.contactType of
+      Nothing -> "."
+      Just ct -> " (" <> show ct <> ")."
 
 relIdToWidg :: RelatedIdentifier -> forall a. Widget HTML a
 relIdToWidg {id, idType, relType} = span [MC.relatedId] [
