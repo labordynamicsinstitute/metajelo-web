@@ -19,6 +19,7 @@ import Data.Maybe                           (Maybe(..), isNothing)
 import Data.Array                           ((:), head, init)
 import Data.Foldable                        (class Foldable, any,
                                              fold, foldMap, intercalate)
+import Data.Natural                         (natToInt)
 import Data.String                          as S
 import Data.String.NonEmpty                 (NonEmptyString, toString)
 import Data.String.Utils                    (endsWith, fromCharArray)
@@ -114,7 +115,7 @@ mkSupplementaryProductWidget prod = div [MC.product] $
       span [MC.basicMetadata, MC.creator]
         [textNE prod.basicMetadata.creator]
     , span [MC.basicMetadata, MC.pubyear]
-        [textNE prod.basicMetadata.publicationYear]
+        [text $ show $ natToInt prod.basicMetadata.publicationYear]
     , span [MC.basicMetadata, MC.title]
         [text $ addEndPunct
           (toString prod.basicMetadata.title)

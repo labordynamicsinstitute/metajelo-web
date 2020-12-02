@@ -112,7 +112,7 @@ let mkPackage =
       https://raw.githubusercontent.com/purescript/package-sets/psc-0.13.2-20190725/src/mkPackage.dhall sha256:0b197efa1d397ace6eb46b243ff2d73a3da5638d8d0ac8473e8e4a8fc528cf57
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.5-20191127/packages.dhall sha256:654e8427ff1f9830542f491623cd5d89b1648774a765520554f98f41d3d1b3b3
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20201125/packages.dhall sha256:ef58d9afae22d1bc9d83db8c72d0a4eca30ce052ab49bbc44ced2da0bc5cad1a
 
 let overrides = { metajelo-web = ./spago.dhall as Location }
 
@@ -134,9 +134,13 @@ let additions =
             "1979eb74baec39b5e62567948f402b4194230e9f"
       , metajelo =
           mkPackage
-            [ "generics-rep"
+            [ "email-validate"
+            , "enums"
+            , "generics-rep"
+            , "globals"
+            , "js-date"
             , "naturals"
-            , "email-validate"
+            , "nonbili-dom"
             , "stringutils"
             , "url-validator"
             , "web-dom"
@@ -145,7 +149,7 @@ let additions =
             , "xpath-like"
             ]
             "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-            "aad3888cd87bae7b58058ddca8b7ed71f0d246f2"
+            "fbf16d93c97d7409fb2b01e28f2ce01bb9b828ca"
       , metajelo-ui-css-classes =
           mkPackage
             [ "prelude", "concur-core", "concur-react" ]
@@ -156,6 +160,11 @@ let additions =
             [ "enums", "maybe", "prelude" ]
             "https://github.com/LiamGoodacre/purescript-naturals.git"
             "v3.0.0"
+     , nonbili-dom =
+         mkPackage
+          [ "effect", "web-dom", "web-html" ]
+          "https://github.com/nonbili/purescript-nonbili-dom.git"
+          "v0.3.0"
       , stringutils =
           mkPackage
             [ "strings"
