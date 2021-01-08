@@ -117,7 +117,19 @@ let upstream =
 let overrides = { metajelo-web = ./spago.dhall as Location }
 
 let additions =
-      { enums =
+      {   datacite =
+          { dependencies =
+            [ "effect", "functors", "generics-rep", "simple-json" ]
+          , repo = "https://github.com/CornellCAC/purescript-datacite.git"
+          , version = "8218b88174a8a72d30b53f5e7ead976fef30f0b4"
+          }
+        , either-extra =
+          { dependencies =
+            [ "either" ]
+          , repo = "https://github.com/bbarker/purescript-either-extra.git"
+          , version = "v0.0.3"
+          }
+        , enums =
           mkPackage
             [ "control"
             , "either"
@@ -134,7 +146,9 @@ let additions =
             "1979eb74baec39b5e62567948f402b4194230e9f"
       , metajelo =
           mkPackage
-            [ "email-validate"
+            [ "datacite"
+            , "either-extra"
+            , "email-validate"
             , "enums"
             , "generics-rep"
             , "globals"
@@ -149,12 +163,12 @@ let additions =
             , "xpath-like"
             ]
             "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-            "fbf16d93c97d7409fb2b01e28f2ce01bb9b828ca"
+            "252a907ef640d477c4c7ec290292621db3f07f1c"
       , metajelo-ui-css-classes =
           mkPackage
             [ "prelude", "concur-core", "concur-react" ]
             "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
-            "v0.1.0"
+            "e34097b5d6bcc4d2630b7f56cb7065f1553c6a27"
       , naturals =
           mkPackage
             [ "enums", "maybe", "prelude" ]

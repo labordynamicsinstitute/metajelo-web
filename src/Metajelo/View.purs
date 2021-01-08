@@ -44,6 +44,10 @@ spc = span' [text " "]
 spacify :: forall a. Array (Widget HTML a) -> Array (Widget HTML a)
 spacify  = intercalate [spc] <<< (map singleton)
 
+
+comma :: forall a. Widget HTML a
+comma = span' [text ", "]
+
 toCharArray :: String -> Array String
 toCharArray = map S.singleton <<< S.toCodePointArray
 
@@ -77,8 +81,8 @@ mkRecordWidget rec = div [MC.record] [
   , relIdInfo
   ]
   where
-    recId = rec.identifier.id
-    idTyp = show rec.identifier.idType
+    recId = rec.identifier.identifier
+    idTyp = show rec.identifier.identifierType
     prodGroups :: FO.Object (NonEmptyArray SupplementaryProduct)
     prodGroups = group
       (\p -> printResTyp p)
@@ -108,19 +112,16 @@ mkSupplementaryProductWidget prod = div [MC.product] $
   spacify $ [
     span [MC.productCitation]
       [cite' $ spacify $ citeElems]
-  ] <> (locElems loc)
+  ] <> [formatsWidget prod.format] <> (locElems loc)
   where
     citeElems = basicMeta <> [span' [instNameElem loc, text "."], resIdElem]
     basicMeta = [
-      span [MC.basicMetadata, MC.creator]
-        [textNE prod.basicMetadata.creator]
+      creatorsWidget prod.basicMetadata.creators
     , span [MC.basicMetadata, MC.pubyear]
         [text $ show $ natToInt prod.basicMetadata.publicationYear]
     , span [MC.basicMetadata, MC.title]
-        [text $ addEndPunct
-          (toString prod.basicMetadata.title)
-          (isNothing prod.resourceID)
-          ","
+        [   titlesWidget prod.basicMetadata.titles
+          , text $ addEndPunct "" (isNothing prod.resourceID) ","
         ]
     ]
     resIdElem = case prod.resourceID of
@@ -128,6 +129,18 @@ mkSupplementaryProductWidget prod = div [MC.product] $
       Nothing -> mempty
 
     loc = prod.location
+
+creatorsWidget :: NonEmptyArray NonEmptyString -> forall a. Widget HTML a
+creatorsWidget ctors = span [MC.basicMetadata, MC.creatorList]
+  $ (ctors # NA.toArray <#> (\c -> span_ [MC.creator] $ textNE c))
+
+titlesWidget :: NonEmptyArray NonEmptyString -> forall a. Widget HTML a
+titlesWidget titles = span_ [] $ intercalate comma
+  $ (titles # NA.toArray <#> (\t -> span_ [MC.title] $ textNE t))
+
+formatsWidget :: Array Format -> forall a. Widget HTML a
+formatsWidget fmts = span_ [MC.formatList] $ intercalate comma
+  $ (fmts <#> (\f -> span_ [MC.format] $ textNE f))
 
 instNameElem :: Location -> forall a. Widget HTML a
 instNameElem loc = span [MC.institutionName]
@@ -188,15 +201,15 @@ contactWidg contact = span_ [MC.institutionContact] $
       Just ct -> " (" <> show ct <> ")."
 
 relIdToWidg :: RelatedIdentifier -> forall a. Widget HTML a
-relIdToWidg {id, idType, relType} = span [MC.relatedId] [
-    span_ [MC.relType] $ text $ (show relType)
+relIdToWidg {identifier , identifierType, relationType} = span [MC.relatedId] [
+    span_ [MC.relType] $ text $ (show relationType)
   , spc
-  , idToWidg {id, idType}
+  , idToWidg {identifier , identifierType}
 ]
 
 idToWidg :: Identifier -> forall a. Widget HTML a
-idToWidg fullId@{id, idType} = span [MC.identifier] [
-  span_ [MC.idType] $ text $ (show idType)
+idToWidg fullId@{identifier , identifierType} = span [MC.identifier] [
+  span_ [MC.idType] $ text $ (show identifierType)
 , span_ [MC.idUrl] $ idUrl fullId
 ]
 
@@ -206,34 +219,34 @@ citeId idStr = cite' [textNE idStr]
 -- | Returns a URL if one can be constructed from the identifier.
 -- | Otherwise, just returns the identifier as text.
 idUrl :: Identifier -> forall a. Widget HTML a
-idUrl {id, idType: ARK} = a [hrefNE id] [citeId id]
-idUrl {id, idType: ArXiv} = a [href url] [citeId id]
-  where url = "https://arxiv.org/abs/" <> toString id
-idUrl {id, idType: Bibcode} = a [href url] [citeId id]
-  where url = "https://ui.adsabs.harvard.edu/abs/" <> toString id <> "/abstract"
-idUrl {id, idType: DOI} = a [href url] [citeId id]
-  where url = "https://doi.org/" <> toString id
-idUrl {id, idType: EAN13} = citeId id
-idUrl {id, idType: EISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> toString id
-idUrl {id, idType: Handle} = a [href url] [citeId id]
-  where url = "http://hdl.handle.net/" <> toString id
-idUrl {id, idType: IGSN} = a [href url] [citeId id]
-  where url = "http://igsn.org/" <> toString id
-idUrl {id, idType: ISBN} = citeId id
-idUrl {id, idType: ISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> toString id
-idUrl {id, idType: ISTC} = citeId id
-idUrl {id, idType: LISSN} = a [href url] [citeId id]
-  where url = "https://www.worldcat.org/ISSN/" <> toString id
-idUrl {id, idType: LSID} = a [href url] [citeId id]
-  where url = "http://www.lsid.info/resolver/?lsid=" <> toString id
-idUrl {id, idType: PMID} = a [href url] [citeId id]
-  where url = "https://www.ncbi.nlm.nih.gov/pubmed/" <> toString id
-idUrl {id, idType: PURL} = a [hrefNE id] [citeId id]
-idUrl {id, idType: UPC} = citeId id
-idUrl {id, idType: URL} = a [hrefNE id] [citeId id]
-idUrl {id, idType: URN} = citeId id
+idUrl {identifier , identifierType: ARK} = a [hrefNE identifier] [citeId identifier]
+idUrl {identifier , identifierType: ArXiv} = a [href url] [citeId identifier]
+  where url = "https://arxiv.org/abs/" <> toString identifier
+idUrl {identifier , identifierType: Bibcode} = a [href url] [citeId identifier]
+  where url = "https://ui.adsabs.harvard.edu/abs/" <> toString identifier <> "/abstract"
+idUrl {identifier , identifierType: DOI} = a [href url] [citeId identifier]
+  where url = "https://doi.org/" <> toString identifier
+idUrl {identifier , identifierType: EAN13} = citeId identifier
+idUrl {identifier , identifierType: EISSN} = a [href url] [citeId identifier]
+  where url = "https://www.worldcat.org/ISSN/" <> toString identifier
+idUrl {identifier , identifierType: Handle} = a [href url] [citeId identifier]
+  where url = "http://hdl.handle.net/" <> toString identifier
+idUrl {identifier , identifierType: IGSN} = a [href url] [citeId identifier]
+  where url = "http://igsn.org/" <> toString identifier
+idUrl {identifier , identifierType: ISBN} = citeId identifier
+idUrl {identifier , identifierType: ISSN} = a [href url] [citeId identifier]
+  where url = "https://www.worldcat.org/ISSN/" <> toString identifier
+idUrl {identifier , identifierType: ISTC} = citeId identifier
+idUrl {identifier , identifierType: LISSN} = a [href url] [citeId identifier]
+  where url = "https://www.worldcat.org/ISSN/" <> toString identifier
+idUrl {identifier , identifierType: LSID} = a [href url] [citeId identifier]
+  where url = "http://www.lsid.info/resolver/?lsid=" <> toString identifier
+idUrl {identifier , identifierType: PMID} = a [href url] [citeId identifier]
+  where url = "https://www.ncbi.nlm.nih.gov/pubmed/" <> toString identifier
+idUrl {identifier , identifierType: PURL} = a [hrefNE identifier] [citeId identifier]
+idUrl {identifier , identifierType: UPC} = citeId identifier
+idUrl {identifier , identifierType: URL} = a [hrefNE identifier] [citeId identifier]
+idUrl {identifier , identifierType: URN} = citeId identifier
 
 ipolicyWidg :: InstitutionPolicy -> forall a. Widget HTML a
 ipolicyWidg ipol = div [MC.institutionPolicy] $ spacify $ [
