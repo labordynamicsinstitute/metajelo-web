@@ -121,13 +121,13 @@ let additions =
           { dependencies =
             [ "effect", "functors", "generics-rep", "simple-json" ]
           , repo = "https://github.com/CornellCAC/purescript-datacite.git"
-          , version = "8218b88174a8a72d30b53f5e7ead976fef30f0b4"
+          , version = "b54176303ae818ec40298d69cea6d7752c11ad14"
           }
         , either-extra =
           { dependencies =
             [ "either" ]
           , repo = "https://github.com/bbarker/purescript-either-extra.git"
-          , version = "v0.0.3"
+          , version = "v0.0.4"
           }
         , enums =
           mkPackage
@@ -163,7 +163,7 @@ let additions =
             , "xpath-like"
             ]
             "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-            "252a907ef640d477c4c7ec290292621db3f07f1c"
+            "37e46c618c78f25a12eed10bfcee82adb5bf7019"
       , metajelo-ui-css-classes =
           mkPackage
             [ "prelude", "concur-core", "concur-react" ]
