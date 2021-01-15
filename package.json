@@ -16,7 +16,7 @@
   "license": "BSD3",
   "devDependencies": {
     "autoprefixer": "^9.8.6",
-    "bower": "^1.8.6",
+    "bower": "^1.8.10",
     "cssmin": "^0.4.3",
     "cssnano": "^4.1.10",
     "google-closure-compiler": "^20200927.0.0",
