@@ -121,7 +121,7 @@ let additions =
           { dependencies =
             [ "effect", "functors", "generics-rep", "simple-json" ]
           , repo = "https://github.com/CornellCAC/purescript-datacite.git"
-          , version = "b54176303ae818ec40298d69cea6d7752c11ad14"
+          , version = "v0.1.0"
           }
         , either-extra =
           { dependencies =
@@ -163,12 +163,12 @@ let additions =
             , "xpath-like"
             ]
             "https://github.com/labordynamicsinstitute/purescript-metajelo.git"
-            "37e46c618c78f25a12eed10bfcee82adb5bf7019"
+            "v4.0.0"
       , metajelo-ui-css-classes =
           mkPackage
             [ "prelude", "concur-core", "concur-react" ]
             "https://github.com/labordynamicsinstitute/metajelo-ui-css-classes.git"
-            "e34097b5d6bcc4d2630b7f56cb7065f1553c6a27"
+            "v1.0.0"
       , naturals =
           mkPackage
             [ "enums", "maybe", "prelude" ]

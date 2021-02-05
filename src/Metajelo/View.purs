@@ -71,14 +71,14 @@ addEndPunct input skip punct =
 
 mkRecordWidget :: MetajeloRecord -> forall a. Widget HTML a
 mkRecordWidget rec = div [MC.record] [
-  span [MC.productsHeader] [
-    span_ [MC.recordId] $ idToWidg rec.identifier
-  ]
+    span [MC.relatedIdsHeader] []
+  , relIdInfo
+  , span [MC.productsHeader] [
+      span_ [MC.recordId] $ idToWidg rec.identifier
+    ]
   , ul [MC.productList] $ map
       (\k -> li_ [MC.productGroup] $ prodGrpWidg k)
       (FO.keys prodGroups)
-  , span [MC.relatedIdsHeader] []
-  , relIdInfo
   ]
   where
     recId = rec.identifier.identifier
@@ -131,8 +131,9 @@ mkSupplementaryProductWidget prod = div [MC.product] $
     loc = prod.location
 
 creatorsWidget :: NonEmptyArray NonEmptyString -> forall a. Widget HTML a
-creatorsWidget ctors = span [MC.basicMetadata, MC.creatorList]
-  $ (ctors # NA.toArray <#> (\c -> span_ [MC.creator] $ textNE c))
+creatorsWidget ctors = span_ [MC.basicMetadata, MC.creatorList]
+  $ intercalate comma
+    $ (ctors # NA.toArray <#> (\c -> span_ [MC.creator] $ textNE c))
 
 titlesWidget :: NonEmptyArray NonEmptyString -> forall a. Widget HTML a
 titlesWidget titles = span_ [] $ intercalate comma
