@@ -19,7 +19,7 @@
     "bower": "^1.8.12",
     "cssmin": "^0.4.3",
     "cssnano": "^4.1.11",
-    "google-closure-compiler": "^20200927.0.0",
+    "google-closure-compiler": "^20210601.0.0",
     "parcel-bundler": "^1.12.5",
     "postcss-font-base64": "^1.0.5",
     "postcss-modules": "^3.2.2",
